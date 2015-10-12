@@ -1,1 +1,5 @@
-
+body, html {
+  background-color: #3498db;
+  color: #ecf0f1;
+  font-family: sans-serif;
+}
