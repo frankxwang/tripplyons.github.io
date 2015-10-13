@@ -1,5 +1,8 @@
 body, html {
-	background: linear-gradient(269deg, hsl(240, 50%, 45%), hsl(350, 100%, 70%));
+	/* Chrome 10+, Saf5.1+ */ /* FF3.6+ */ /* IE10 */ /* Opera 11.10+ */
+	background:         -webkit-linear-gradient(left, #f46b45 10%, #eea849 90%);
+	background:         -o-linear-gradient(left, #f46b45 10%, #eea849 90%);
+	background:         linear-gradient(to right, #f46b45 10%, #eea849 90%); /* W3C */
 	background-size: 400% 400%;
 	text-align: center;
 	padding: 0;
@@ -31,8 +34,8 @@ b {
 }
 
 #logo {
-	margin-top: 64px;
-	margin-bottom: 48px;
+	margin-top: 48px;
+	margin-bottom: 32px;
 }
 
 @-webkit-keyframes bgAnim {
