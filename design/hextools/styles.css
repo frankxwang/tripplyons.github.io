@@ -1,12 +1,18 @@
 body, html {
 	/* Chrome 10+, Saf5.1+ */ /* FF3.6+ */ /* IE10 */ /* Opera 11.10+ */
-	background:         -webkit-linear-gradient(left, #f46b45 10%, #eea849 90%);
-	background:         -o-linear-gradient(left, #f46b45 10%, #eea849 90%);
-	background:         linear-gradient(to right, #f46b45 10%, #eea849 90%); /* W3C */
+	background:         -webkit-linear-gradient(90deg, #f46b45, #eea849);
+	background:         -o-linear-gradient(90deg, #f46b45 10%, #eea849);
+	background:         linear-gradient(90deg, #f46b45, #eea849); /* W3C */
 	background-size: 400% 400%;
-	text-align: center;
+	
+	-webkit-animation: bgAnim 15s ease infinite;
+	-moz-animation: bgAnim 15s ease infinite;
+	-o-animation: bgAnim 15s ease infinite;
+	animation: bgAnim 15s ease infinite;
+}
+
+.page {
 	padding: 0;
-	margin: 0;
 	
 	font-family: Verdana, Geneva, Tahoma, sans-serif;
 	font-weight: 400;
@@ -14,10 +20,9 @@ body, html {
 	stroke: #ecf0f1;
 	fill: #ecf0f1;
 	
-	-webkit-animation: bgAnim 15s ease infinite;
-	-moz-animation: bgAnim 15s ease infinite;
-	-o-animation: bgAnim 15s ease infinite;
-	animation: bgAnim 15s ease infinite;
+	text-align: center;
+	margin-left: 5%;
+	margin-right: 5%;
 }
 
 b {
