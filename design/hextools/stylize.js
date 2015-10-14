@@ -29,10 +29,19 @@ function getStyle(el, styleProp) {
 }
 
 function stylize() {
+	var logo = document.getElementById("logo");
+	var width = document.documentElement.clientWidth;
+	var height = document.documentElement.clientHeight;
+	
+	logo.style.width = ((width+height)/2/3).toString();
+	
+	console.log(logo.style.width);
+	
 	var squares = document.getElementsByClassName("square");
 	for (var i = 0; i < squares.length; i++) {
 		squares[i].style.height = getStyle(squares[i], "width");
 	}
+	
 }
 
-window.onload = window.onresize = stylize();
+window.onload = window.onresize = stylize;

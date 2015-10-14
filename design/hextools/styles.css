@@ -34,17 +34,11 @@ b {
 
 .title {
 	font-weight: 500;
-	font-size: 4em;
+	font-size: 3em;
 }
 
 .larger {
-	font-size: 1.75em;
-}
-
-#logo {
-	width: 35%;
-	margin-top: 48px;
-	margin-bottom: 32px;
+	font-size: 1.5em;
 }
 
 @-webkit-keyframes bgAnim {
