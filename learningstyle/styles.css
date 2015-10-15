@@ -14,8 +14,9 @@ body, html {
 	animation: bgAnim 15s ease infinite;
 }
 
-ul {
-    list-style-type: none;
+li {
+	list-style: none;
+	text-align: center;
 }
 
 .page {
@@ -28,21 +29,23 @@ ul {
 	fill: #f7fdfa;
 	
 	text-align: center;
-	margin-left: 5%;
-	margin-right: 5%;
+	margin-left: 10%;
+	margin-right: 10%;
 }
 
-b {
-	font-weight: 500;
+.body {
+	margin-right: 20%;
+	margin-left: 20%;
 }
 
 .title {
-	font-weight: 500;
+	font-weight: bold;
 	font-size: 3em;
 }
 
 .larger {
 	font-size: 1.5em;
+	font-weight: bold;
 }
 
 @-webkit-keyframes bgAnim {
