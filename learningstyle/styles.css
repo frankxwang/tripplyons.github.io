@@ -1,8 +1,8 @@
 body, html {
 	/* Chrome 10+, Saf5.1+ */ /* FF3.6+ */ /* IE10 */ /* Opera 11.10+ */
-	background:         -webkit-linear-gradient(90deg, #f46b45, #eea849);
-	background:         -o-linear-gradient(90deg, #f46b45 10%, #eea849);
-	background:         linear-gradient(90deg, #f46b45, #eea849);
+	background:         -webkit-linear-gradient(90deg, #db4437, #f4b400);
+	background:         -o-linear-gradient(90deg, #db4437 10%, #f4b400);
+	background:         linear-gradient(90deg, #db4437, #f4b400);
 	/*background:         -webkit-linear-gradient(90deg, #6f5499, #f1654c);*/
 	/*background:         -o-linear-gradient(90deg, #6f5499 10%, #f1654c);*/
 	/*background:         linear-gradient(90deg, #6f5499, #f1654c);*/
