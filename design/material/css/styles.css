@@ -1,0 +1,42 @@
+.titlebar>.valign-wrapper>a {
+    padding-left: 15px;
+    padding-right: 25px;
+    text-align: center;
+}
+
+.parallax-container {
+    display: block;
+    min-height: 380px;
+    line-height: 0;
+    height: auto;
+    padding-top: 5%;
+    padding-bottom: 5%;
+}
+
+@media only screen and (max-width: 992px) {
+    .titlebar>.valign-wrapper>a {
+        padding-left: 10px;
+        padding-right: 18px;
+        text-align: center;
+    }
+    .parallax-container {
+        min-height: 200px;
+    }
+    .header {
+        font-size: 150%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .titlebar>.valign-wrapper>a {
+        padding-left: 7px;
+        padding-right: 14px;
+        text-align: center;
+    }
+    .parallax-container {
+        min-height: 150px;
+    }
+    .header {
+        font-size: 150%;
+    }
+}
