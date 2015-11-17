@@ -10,3 +10,5 @@ function draw() {
   ctx.fillRect(0, 95, 300, 10);
   ctx.fillRect(0, 195, 300, 10);
 }
+
+draw();
