@@ -4,43 +4,100 @@ var Board = function (data, size) {
 };
 
 Board.prototype.getCell = function (x, y) {
-	return this.data.charAt(x + y * this.size);
+	return this.data.charAt(y * this.size + x);
 };
 
 Board.prototype.isEmpty = function (x, y) {
 	return this.getCell(x, y) == " ";
-}
+};
 
 Board.prototype.isTaken = function (x, y) {
 	return !this.isEmpty(x, y);
-}
+};
+
+Board.prototype.containsWinner = function (symbol) {
+	for (var row = 0; row < this.size; row++) {
+		var isWinner = true;
+		for (var col = 0; col < this.size; col++) {
+			isWinner = isWinner && this.getCell(col, row) == symbol;
+		}
+		if (isWinner) {
+			return true;
+		}
+	}
+	for (var col = 0; col < this.size; col++) {
+		var isWinner = true;
+		for (var row = 0; row < this.size; row++) {
+			isWinner = isWinner && this.getCell(col, row) == symbol;
+		}
+		if (isWinner) {
+			return true;
+		}
+	}
+	var isWinner = true;
+	for (var i = 0; i < this.size; i++) {
+		var row = i;
+		var col = i;
+		isWinner = isWinner && this.getCell(col, row) == symbol;
+	}
+	if (isWinner) {
+		return true;
+	}
+	isWinner = true;
+	for (var i = 0; i < this.size; i++) {
+		var row = i;
+		var col = this.size - 1 - i;
+		isWinner = isWinner && this.getCell(col, row) == symbol;
+	}
+	if (isWinner) {
+		return true;
+	}
+	
+	return false;
+};
+
+Board.prototype.isFull = function () {
+	for (var i = 0; i < this.data.length; i++) {
+		if (this.data.charAt(i) == " ") {
+			return false;
+		}
+	}
+
+	return true;
+};
 
 Board.prototype.setCell = function (x, y, contents) {
 	// console.log("[[BEFORE:"+this.data+"]]");
-	var pos = x + y * this.size;
+	var pos = y * this.size + x;
 	// console.log("x: " + x + ", y: " + y + ", pos: " + pos + ", contents: \"" + contents + "\"");
-	this.data = this.data.substring(0, pos - 1) + contents + this.data.substring(pos + 1);
+	this.data = this.data.substring(0, pos) + contents + this.data.substring(pos + 1);
 	// console.log("[[AFTER:"+this.data+"]]");
 };
 
 var TicTacToe = function () {
 	this.canvas = document.getElementById("ttt-canvas");
 	this.ctx = this.canvas.getContext("2d");
-	this.board = new Board("         ", 3);
 	this.drawCellSize = 100;
 	this.strokeWidth = 20;
-	this.winner = " ";
-	this.turn = "X";
-	this.playerSymb = "X";
-	this.aiSymb = "O";
-
+	
+	this.init();
+	
 	var self = this;
 	document.addEventListener("mousedown", function (e) { self.handleMouse(e); });
 };
 
+TicTacToe.prototype.init = function() {
+	this.board = new Board("         ", 3);
+	
+	this.turn = "X";
+	this.playerSymb = "X";
+	this.aiSymb = "O";
+	this.isPlaying = true;
+}
+
 TicTacToe.prototype.draw = function () {
-	console.log("[[DRAW]]");
-	console.log(this.canvas);
+	// console.log("[[DRAW]]");
+	// console.log(this.canvas);
 	this.ctx.fillStyle = "#34495e";
 	this.ctx.fillRect(0, 0, this.drawCellSize * this.board.size, this.drawCellSize * this.board.size);
 	this.ctx.strokeStyle = "#ecf0f1";
@@ -84,15 +141,19 @@ TicTacToe.prototype.draw = function () {
 };
 
 TicTacToe.prototype.update = function () {
-	// console.log("[[UPDATE]]");
-	// console.log(this.board.data);
-	// if (this.turn == this.aiSymb) {
-	// 	console.log("[[AI]]");
-	// 	var AIpos = AI(this.board);
-	// 	console.log(AIpos);
-	// 	this.board.setCell(AIpos.x, AIpos.y, this.aiSymb);
-	// 	this.draw();
-	// }
+	console.log("[[UPDATE]]");
+	this.isPlaying = !this.board.isFull() && !this.board.containsWinner("X") && !this.board.containsWinner("O");
+	if (this.isPlaying) {
+		if (this.turn == this.aiSymb) {
+			console.log("[[AI]]");
+			var AIpos = AI(this.board, this.aiSymb);
+			console.log(AIpos);
+			this.board.setCell(AIpos.x, AIpos.y, this.aiSymb);
+			this.draw();
+			this.turn = this.playerSymb;
+			this.update();
+		}
+	}
 };
 
 function getOffsetLeft(elem) {
@@ -116,20 +177,28 @@ function getOffsetTop(elem) {
 }
 
 TicTacToe.prototype.handleMouse = function (e) {
+	console.log("[[MOUSE]]");
+	
+	if(!this.isPlaying) {
+		this.init();
+		this.draw();
+		return;
+	}
+	
 	if (this.turn == this.playerSymb) {
-		console.log(this.canvas);
+		// console.log(this.canvas);
 		var x = e.pageX - getOffsetLeft(this.canvas);
 		var y = e.pageY - getOffsetTop(this.canvas);
-		console.log("("+x+", "+y+")");
+		// console.log("("+x+", "+y+")");
 		if (x > 0 && y >= 0 && x <= this.drawCellSize * this.board.size && y <= this.drawCellSize * this.board.size) {
 			var boardX = Math.floor(x / this.drawCellSize);
 			var boardY = Math.floor(y / this.drawCellSize);
-			console.log("("+boardX+", "+boardY+")");
-			console.log("[[BEFORE:"+ this.board.data +"]]");
+			// console.log("("+boardX+", "+boardY+")");
+			// console.log("[[BEFORE:"+ this.board.data +"]]");
 			if (this.board.isEmpty(boardX, boardY)) {
-				console.log("[[EMPTY]]");
+				// console.log("[[EMPTY]]");
 				this.board.setCell(boardX, boardY, this.playerSymb);
-				console.log("[[AFTER:"+ this.board.data +"]]");
+				// console.log("[[AFTER:"+ this.board.data +"]]");
 				this.turn = this.aiSymb;
 				this.draw();
 				this.update();
