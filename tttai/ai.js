@@ -109,7 +109,7 @@ var runBoard = function(net, board, symb, trainer) {
 		}
 	}
 	if(count == 0) {
-	alert(newBoard);
+		alert(newBoard);
 	}
 	var results = net.run(newBoard);
 	
