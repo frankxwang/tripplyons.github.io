@@ -108,22 +108,25 @@ var newBoardify = function(board) {
 			newBoard.push(2);
 		}
 	}
+	
+	return newBoard;
 }
 
-var runBoard = function(net, board, symb, trainer) {
-	trainer = trainer || undefined;
-	var newBoard = newBoardify(board);
-	if(trainer === undefined) {
-		alert(newBoard);
-	}
-	var results = net.run(newBoard);
-	
-	var greatestValue = -1;
+var getGreatestValue = function(board, results) {
+	var greatestValue = -Infinity;
 	for(var i=0; i<board.size*board.size; i++) {
 		if(results[i] > greatestValue && newBoard[i] == 0) {
 			greatestValue = results[i];
 		}
 	}
+}
+
+var trainRunBoard = function(net, board, symb, trainer) {
+	trainer = trainer || undefined;
+	var newBoard = newBoardify(board);
+	var results = net.run(newBoard);
+	
+	var greatestValue = getGreatestValue(board, results);
 	
 	var greatestPositions = [];
 	for(var i=0; i<board.size*board.size; i++) {
