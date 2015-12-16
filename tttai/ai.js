@@ -133,7 +133,7 @@ var runBoard = function(net, board, symb, trainer) {
 		outList.push(0);
 	}
 	outList[where] = 1;
-	if(trainer != null) {
+	if(trainer != undefined) {
 		if(symb == trainer.aiSymb1) {
 			trainer.mem1.push({input: newBoard, output: outList});
 		} else {
