@@ -98,6 +98,7 @@ Trainer.prototype.init = function () {
 var count = 0;
 
 var runBoard = function(net, board, symb, trainer) {
+	trainer = trainer || undefined;
 	var newBoard = [];
 	for(var i=0; i<board.size*board.size; i++) {
 		if(board.getCell(i%3, Math.floor(i/3)) == " ") {
