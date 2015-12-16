@@ -75,7 +75,7 @@ Board.prototype.setCell = function (x, y, contents) {
 };
 
 var TicTacToe = function () {
-	AI();
+	Trainer();
 	this.canvas = document.getElementById("ttt-canvas");
 	this.ctx = this.canvas.getContext("2d");
 	this.drawCellSize = 100;
