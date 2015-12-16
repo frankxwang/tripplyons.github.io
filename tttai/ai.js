@@ -180,5 +180,5 @@ var trainer = new Trainer();
 
 var AI = function (board, symb) {
 	var net = trainer.net;
-	return runBoard(net, board, symb);
+	return runBoard(net, board, symb, undefined);
 }
