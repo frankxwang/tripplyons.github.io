@@ -108,7 +108,7 @@ var runBoard = function(net, board, symb, trainer) {
 			newBoard.push(2);
 		}
 	}
-	if(trainer == null) {
+	if(trainer == undefined) {
 		alert(newBoard);
 	}
 	var results = net.run(newBoard);
