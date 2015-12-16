@@ -121,6 +121,16 @@ var getGreatestValue = function(board, results) {
 	}
 }
 
+var getGreatestPositions = function(board, results, greatestValue) {
+	var greatestPositions = [];
+	for(var i=0; i<board.size*board.size; i++) {
+		if(results[i] == greatestValue) {
+			greatestPositions.push({x: i%3, y: Math.floor(i/3)});
+		}
+	}
+	return greatestPositions;
+}
+
 var trainRunBoard = function(net, board, symb, trainer) {
 	trainer = trainer || undefined;
 	var newBoard = newBoardify(board);
@@ -128,12 +138,7 @@ var trainRunBoard = function(net, board, symb, trainer) {
 	
 	var greatestValue = getGreatestValue(board, results);
 	
-	var greatestPositions = [];
-	for(var i=0; i<board.size*board.size; i++) {
-		if(results[i] == greatestValue) {
-			greatestPositions.push({x: i%3, y: Math.floor(i/3)});
-		}
-	}
+	var greatestPositions = getGreatestPositions(board, results, greatestValue);
 	
 	var where = greatestPositions[Math.floor(Math.random()*greatestPositions.length)];
 	var outList = [];
