@@ -97,8 +97,7 @@ Trainer.prototype.init = function () {
 
 var count = 0;
 
-var runBoard = function(net, board, symb, trainer) {
-	trainer = trainer || undefined;
+var newBoardify = function(board) {
 	var newBoard = [];
 	for(var i=0; i<board.size*board.size; i++) {
 		if(board.getCell(i%3, Math.floor(i/3)) == " ") {
@@ -109,6 +108,11 @@ var runBoard = function(net, board, symb, trainer) {
 			newBoard.push(2);
 		}
 	}
+}
+
+var runBoard = function(net, board, symb, trainer) {
+	trainer = trainer || undefined;
+	var newBoard = newBoardify(board);
 	if(trainer === undefined) {
 		alert(newBoard);
 	}
@@ -180,5 +184,5 @@ var trainer = new Trainer();
 
 var AI = function (board, symb) {
 	var net = trainer.net;
-	return runBoard(net, board, symb, undefined);
+	return runBoard(net, board, symb);
 }
