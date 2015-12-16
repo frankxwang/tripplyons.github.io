@@ -108,7 +108,9 @@ var runBoard = function(net, board, symb, trainer) {
 			newBoard.push(2);
 		}
 	}
-	alert(newBoard);
+	if(trainer == null) {
+		alert(newBoard);
+	}
 	var results = net.run(newBoard);
 	
 	var greatestValue = -1;
