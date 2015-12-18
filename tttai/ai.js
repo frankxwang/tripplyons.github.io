@@ -78,7 +78,7 @@ var Trainer = function () {
 	this.net = new brain.NeuralNetwork();
 	this.net.train([{input:  [0, 0, 0, 0, 0, 0, 0, 0, 0],
             	     output: [0, 0, 0, 0, 0, 0, 0, 0, 0]}]);
-	for(var i=0; i<250; i++) {
+	for(var i=0; i<5000; i++) {
 		this.init();
 	}
 };
@@ -97,7 +97,7 @@ Trainer.prototype.init = function () {
 
 var count = 0;
 
-var newBoardify = function(board) {
+var newBoardify = function(board, symb) {
 	var newBoard = [];
 	for(var i=0; i<board.size*board.size; i++) {
 		if(board.getCell(i%3, Math.floor(i/3)) == " ") {
@@ -112,33 +112,35 @@ var newBoardify = function(board) {
 	return newBoard;
 }
 
-var getGreatestValue = function(board, results) {
+var getGreatestValue = function(board, newBoard, results) {
 	var greatestValue = -Infinity;
 	for(var i=0; i<board.size*board.size; i++) {
 		if(results[i] > greatestValue && newBoard[i] == 0) {
 			greatestValue = results[i];
 		}
 	}
+	return greatestValue;
 }
 
 var getGreatestPositions = function(board, results, greatestValue) {
 	var greatestPositions = [];
 	for(var i=0; i<board.size*board.size; i++) {
 		if(results[i] == greatestValue) {
-			greatestPositions.push({x: i%3, y: Math.floor(i/3)});
+			greatestPositions.push({x: i%board.size, y: Math.floor(i/board.size)});
 		}
 	}
 	return greatestPositions;
 }
 
 var trainRunBoard = function(net, board, symb, trainer) {
-	trainer = trainer || undefined;
-	var newBoard = newBoardify(board);
+	try {
+	var newBoard = newBoardify(board, symb);
 	var results = net.run(newBoard);
 	
-	var greatestValue = getGreatestValue(board, results);
+	var greatestValue = getGreatestValue(board, newBoard, results);
 	
 	var greatestPositions = getGreatestPositions(board, results, greatestValue);
+	console.log(greatestPositions);
 	
 	var where = greatestPositions[Math.floor(Math.random()*greatestPositions.length)];
 	var outList = [];
@@ -146,12 +148,31 @@ var trainRunBoard = function(net, board, symb, trainer) {
 		outList.push(0);
 	}
 	outList[where] = 1;
-	if (trainer !== undefined) {
-		if(symb == trainer.aiSymb1) {
-			trainer.mem1.push({input: newBoard, output: outList});
-		} else {
-			trainer.mem2.push({input: newBoard, output: outList});
-		}
+	if(symb == trainer.aiSymb1) {
+		trainer.mem1.push({input: newBoard, output: outList});
+	} else {
+		trainer.mem2.push({input: newBoard, output: outList});
+	}
+	
+	return where;
+	} catch(e) {
+		alert(net.toFunction());
+	}
+}
+
+var runBoard = function(net, board, symb) {
+	trainer = trainer || undefined;
+	var newBoard = newBoardify(board, symb);
+	var results = net.run(newBoard);
+	
+	var greatestValue = getGreatestValue(board, newBoard, results);
+	
+	var greatestPositions = getGreatestPositions(board, results, greatestValue);
+	
+	var where = greatestPositions[Math.floor(Math.random()*greatestPositions.length)];
+	var outList = [];
+	for(var i=0; i<board.size*board.size; i++) {
+		outList.push(0);
 	}
 	
 	return where;
@@ -162,12 +183,12 @@ Trainer.prototype.update = function () {
 	this.isPlaying = !this.board.isFull() && !this.board.containsWinner("X") && !this.board.containsWinner("O");
 	if (this.isPlaying) {
 		if (this.turn == this.aiSymb1) {
-			var AIpos = runBoard(this.net, this.board, this.aiSymb1, this);
+			var AIpos = trainRunBoard(this.net, this.board, this.aiSymb1, this);
 			console.log(AIpos);
 			this.board.setCell(AIpos.x, AIpos.y, this.aiSymb1);
 			this.turn = this.aiSymb2;
 		} else {
-			var AIpos = runBoard(this.net, this.board, this.aiSymb2, this);
+			var AIpos = trainRunBoard(this.net, this.board, this.aiSymb2, this);
 			console.log(AIpos);
 			this.board.setCell(AIpos.x, AIpos.y, this.aiSymb2);
 			this.turn = this.aiSymb1;
@@ -179,11 +200,11 @@ Trainer.prototype.update = function () {
 };
 
 Trainer.prototype.remember = function () {
-	this.net = new brain.NeuralNetwork();
 	if(this.board.containsWinner(this.aiSymb1)) {
+		this.net = new brain.NeuralNetwork();
 		this.net.train(this.mem1);
-	}
-	if(this.board.containsWinner(this.aiSymb2)) {
+	} else if(this.board.containsWinner(this.aiSymb2)) {
+		this.net = new brain.NeuralNetwork();
 		this.net.train(this.mem2);
 	}
 }
