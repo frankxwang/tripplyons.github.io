@@ -3,7 +3,7 @@ function getStyle(a,c){var b;if((b=(a.ownerDocument||document).defaultView)&&b.g
 var palette = {"dark": "#202020"};
 
 function GameCanvas(id) {
-	this.canvas = document.getElementById(canvasId);
+	this.canvas = document.getElementById(id);
 	this.ctx = canvas.getContext("2d");
 	
 	this.width = parseInt(getStyle(canvas, "width"));
