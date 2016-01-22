@@ -2,7 +2,7 @@ function getStyle(a,c){var b;if((b=(a.ownerDocument||document).defaultView)&&b.g
 
 function Game(canvasId) {
 	console.log("[[INIT]]");
-	var canvas = document.getElementById("canvas");
+	var canvas = document.getElementById(canvasId);
 	var ctx = canvas.getContext("2d");
 	var width = parseInt(getStyle(canvas, "width"));
 	var height = parseInt(getStyle(canvas, "height"));
