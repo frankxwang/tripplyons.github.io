@@ -15,7 +15,7 @@ function GameCanvas(id) {
 
 GameCanvas.prototype.clear = function(color) {
 	this.ctx.fillStyle = color;
-	this.ctx.fillRect(0, 0, width, height);
+	this.ctx.fillRect(0, 0, this.width, this.height);
 }
 
 function Game(canvasId) {
