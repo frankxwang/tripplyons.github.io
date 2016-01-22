@@ -11,7 +11,7 @@ function init() {
 	ctx = canvas.getContext("2d");
 	width = parseInt(getStyle(canvas, "width"));
 	height = parseInt(getStyle(canvas, "height"));
-	console.log("[[SIZE:"+width+","+height+"]]");
-	ctx.fillColor = "red";
+	console.log("[[SIZE:("+width+","+height+")]]");
+	ctx.fillColor = "#ff0000";
 	ctx.fillRect(0, 0, width, height);
 }
