@@ -12,6 +12,6 @@ function init() {
 	width = parseInt(getStyle(canvas, "width"));
 	height = parseInt(getStyle(canvas, "height"));
 	console.log("[[SIZE:("+width+","+height+")]]");
-	ctx.fillColor = "#ff0000";
+	ctx.fillStyle = "#ff0000";
 	ctx.fillRect(0, 0, width, height);
 }
