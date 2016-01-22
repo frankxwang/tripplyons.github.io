@@ -9,8 +9,8 @@ function init() {
 	console.log("[[INIT]]");
 	canvas = document.getElementById("canvas");
 	ctx = canvas.getContext("2d");
-	width = getStyle(canvas, "width");
-	height = getStyle(canvas, "height");
+	width = parseInt(getStyle(canvas, "width"));
+	height = parseInt(getStyle(canvas, "height"));
 	console.log("[[SIZE:"+width+","+height+"]]");
 	ctx.fillColor = "red";
 	ctx.fillRect(0, 0, width, height);
