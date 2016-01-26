@@ -30,12 +30,26 @@ GameCanvas.prototype.rect = function (x, y, width, height) {
 	return this;
 }
 
+GameCanvas.prototype.path = function (pointList) {
+	this.ctx.beginPath();
+	
+	this.ctx.moveTo(pointList[0]);
+	for(var i=1; i<pointList.length; i++) {
+		this.ctx.lineTo(pointList[i][0], pointList[i][1]);
+	}
+	
+	this.ctx.closePath();
+	
+	return this;
+}
+
 function MenuState() {
 	
 }
 
 MenuState.prototype.draw = function(canvas) {
 	canvas.clear(palette["dark"]).color(palette["primary"]).rect(canvas.width/4, canvas.height/4, canvas.width/2, canvas.height/2);
+	canvas.color(palette["light"]).path([[3/7*canvas.width, 3/7*canvas.width], [3/7*canvas.width, 5/7*canvas.width]], [5/7*canvas.width, 4/7*canvas.width]);
 }
 
 function Game(canvasId) {
