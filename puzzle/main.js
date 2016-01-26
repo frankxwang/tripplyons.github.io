@@ -8,7 +8,7 @@ function GameCanvas(id) {
 	this.height = parseInt(getStyle(canvas, "height"));
 	console.log("[[SIZE:("+this.width+","+this.height+")]]");
 	
-	this.clear(palette["dark"]);
+	this.clear(palette["dark"]).color(palette["primary"]).rect(this.width/4, this.height/4, this.width/2, this.height/2);
 }
 
 GameCanvas.prototype.clear = function(color) {
