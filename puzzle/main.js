@@ -44,7 +44,7 @@ function Game(canvasId) {
 	var canvas = new GameCanvas(canvasId);
 	
 	var state = new MenuState();
-	state.draw();
+	state.draw(canvas);
 }
 
 function init() {
