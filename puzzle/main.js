@@ -52,7 +52,7 @@ function MenuState() {
 
 MenuState.prototype.draw = function(canvas) {
 	canvas.clear(palette["dark"]).color(palette["primary"]).rect(canvas.width/4, canvas.height/4, canvas.width/2, canvas.height/2);
-	canvas.color(palette["light"]).path([[2/7*canvas.width, 2/7*canvas.width], [2/7*canvas.width, 4/7*canvas.width], [4/7*canvas.width, 3/7*canvas.width]]);
+	canvas.color(palette["light"]).path([[3/14*canvas.width, 3/14*canvas.height], [3/14*canvas.width, 5/14*canvas.height], [9/14*canvas.width, 3/7*canvas.height]]);
 }
 
 function Game(canvasId) {
