@@ -9,7 +9,6 @@ function GameCanvas(id) {
 	console.log("[[SIZE:("+this.width+","+this.height+")]]");
 	
 	this.clear(palette["dark"]);
-	this.color(palette["light"]).rect(0, 0, 256, 256);
 }
 
 GameCanvas.prototype.clear = function(color) {
