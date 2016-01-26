@@ -31,7 +31,7 @@ GameCanvas.prototype.rect = function (x, y, width, height) {
 }
 
 GameCanvas.prototype.path = function (pointList) {
-	console.log("[[PATH:"+this.ctx.fillStyle+","+pointList+"]]")
+	console.log(pointList);
 	
 	this.ctx.beginPath();
 	
