@@ -1,4 +1,4 @@
-var palette = {"dark": "#303030", "light": "#F7F7F7"};
+var palette = {"dark": "#303030", "light": "#F7F7F7", "primary": "#F09040"};
 
 function GameCanvas(id) {
 	this.canvas = document.getElementById(id);
