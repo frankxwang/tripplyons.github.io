@@ -39,6 +39,7 @@ GameCanvas.prototype.path = function (pointList) {
 	}
 	
 	this.ctx.closePath();
+	this.ctx.fill();
 	
 	return this;
 }
