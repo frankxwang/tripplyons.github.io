@@ -38,8 +38,8 @@ GameCanvas.prototype.path = function (pointList) {
 		this.ctx.lineTo(pointList[i][0], pointList[i][1]);
 	}
 	
-	this.ctx.fill();
 	this.ctx.closePath();
+	this.ctx.fill();
 	
 	return this;
 }
