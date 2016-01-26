@@ -33,7 +33,7 @@ GameCanvas.prototype.rect = function (x, y, width, height) {
 GameCanvas.prototype.path = function (pointList) {
 	this.ctx.beginPath();
 	
-	this.ctx.moveTo(pointList[0]);
+	this.ctx.moveTo(pointList[0][0] , pointList[0][1]);
 	for(var i=1; i<pointList.length; i++) {
 		this.ctx.lineTo(pointList[i][0], pointList[i][1]);
 	}
