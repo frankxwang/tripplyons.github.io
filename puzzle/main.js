@@ -8,7 +8,7 @@ function GameCanvas(id) {
 	this.height = parseInt(getStyle(canvas, "height"));
 	console.log("[[SIZE:("+this.width+","+this.height+")]]");
 	
-	this.clear(palette["dark"]).color(palette["primary"]).rect(this.width/4, this.height/4, this.width/2, this.height/2);
+	this.clear(palette["dark"]);
 }
 
 GameCanvas.prototype.clear = function(color) {
@@ -30,9 +30,21 @@ GameCanvas.prototype.rect = function (x, y, width, height) {
 	return this;
 }
 
+function MenuState() {
+	
+}
+
+MenuState.prototype.draw = function(canvas) {
+	canvas.clear(palette["dark"]).color(palette["primary"]).rect(canvas.width/4, canvas.height/4, canvas.width/2, canvas.height/2);
+}
+
 function Game(canvasId) {
 	console.log("[[INIT]]");
+	
 	var canvas = new GameCanvas(canvasId);
+	
+	var state = new MenuState();
+	state.draw();
 }
 
 function init() {
