@@ -135,9 +135,7 @@ Party.prototype.updateHTML = function () {
 };
 
 var partyArr = [
-	new Pokemon(1, 5),
-	new Pokemon(4, 5),
-	new Pokemon(7, 5)
+	new Pokemon(4, 5)
 ];
 
 var party = new Party(partyArr);
@@ -145,8 +143,10 @@ var party = new Party(partyArr);
 var commandWord = '';
 var args = [];
 
+var battling = false;
+
 var execCommand = function () {
-	if (commandWord == 'set') {
+	if (commandWord === 'set') {
 		if (args.length >= 3 && args[0] <= partyArr.length + 1 && args[0] >= 1 && 1 <= args[2] <= 100) {
 			if (args[0] == partyArr.length + 1) {
 				partyArr.push(new Pokemon(args[1], args[2]));
@@ -157,6 +157,9 @@ var execCommand = function () {
 		} else {
 			console.error("[[SET FAILED: " + JSON.stringify(args) + " ]]");
 		}
+	}
+	if(commandWord === 'battle') {
+		battling = true;
 	}
 
 	commandWord = "";
@@ -173,7 +176,10 @@ var enterCommand = function (command) {
 		}
 	}
 
-	if (commandWord === 'set') {
+	if (commandWord === 'set' && !battling) {
+		execCommand();
+	}
+	if (commandWord === 'battle' && !battling) {
 		execCommand();
 	}
 }
