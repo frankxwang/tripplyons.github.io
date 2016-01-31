@@ -1,0 +1,44 @@
+.pokelist {
+	list-style: none;
+}
+
+.pokelist li {
+	display: inline-block;
+}
+
+.pokelist > li > img {
+	display: block;
+}
+
+.pokelist > li > div {
+	display: block;
+}
+
+.translucent {
+	opacity: 0.5;
+}
+
+#input-section {
+	flex: 0 0 80%;
+	max-width: 80%;
+}
+
+#submit-section {
+	flex: 0 0 20%;
+	max-width: 20%;
+}
+
+#result {
+	max-height: 4.0rem;
+}
+
+@media (max-width: 40.0rem) {
+	#input-section {
+		flex: 0 0 100%;
+		max-width: 100%;
+	}
+	#submit-section {
+		flex: 0 0 100%;
+		max-width: 100%;
+	}
+}

@@ -1,3 +1,5 @@
+var canvas;
+
 var palette = {
 	"dark": "#303030",
 	"light": "#F7F7F7",
@@ -6,10 +8,10 @@ var palette = {
 
 function GameCanvas(id) {
 	this.canvas = document.getElementById(id);
-	this.ctx = canvas.getContext("2d");
+	this.ctx = this.canvas.getContext("2d");
 
-	this.width = parseInt(getStyle(canvas, "width"));
-	this.height = parseInt(getStyle(canvas, "height"));
+	this.width = parseInt(getStyle(this.canvas, "width"));
+	this.height = parseInt(getStyle(this.canvas, "height"));
 	console.log("[[SIZE:(" + this.width + "," + this.height + ")]]");
 
 	this.clear(palette["dark"]);
@@ -35,8 +37,6 @@ GameCanvas.prototype.rect = function (x, y, width, height) {
 }
 
 GameCanvas.prototype.path = function (pointList) {
-	console.log(pointList);
-
 	this.ctx.beginPath();
 
 	this.ctx.moveTo(pointList[0][0], pointList[0][1]);
@@ -51,18 +51,18 @@ GameCanvas.prototype.path = function (pointList) {
 }
 
 function Rect(x, y, width, height) {
-	this.x       = x;
-	this.y       = y;
-	this.width   = width;
-	this. height = height;
+	this.x = x;
+	this.y = y;
+	this.width = width;
+	this.height = height;
 }
 
-Rect.prototype.containsPoint = function(x, y) {
+Rect.prototype.containsPoint = function (x, y) {
 	return !(x < this.x || y < this.y || x > this.x + this.width || y > this.y + this.height);
 }
 
 function MenuState() {
-	var playBtn = new Rect(
+	this.playBtn = new Rect(
 		canvas.width / 4,
 		canvas.height / 4,
 		canvas.width / 2,
@@ -70,8 +70,8 @@ function MenuState() {
 	);
 }
 
-MenuState.prototype.draw = function (canvas) {
-	canvas.clear(palette["dark"]).color(palette["primary"]).rect(this.playBtn.x, this.playBtn.y, this.playBtn.width, this.playBtn.height);
+MenuState.prototype.draw = function () {
+	canvas.color(palette["primary"]).rect(this.playBtn.x, this.playBtn.y, this.playBtn.width, this.playBtn.height);
 	canvas.color(palette["light"]).path([[6 / 18 * canvas.width, 6 / 18 * canvas.height], [6 / 18 * canvas.width, 12 / 18 * canvas.height], [12 / 18 * canvas.width, 9 / 18 * canvas.height]]);
 }
 
@@ -80,17 +80,36 @@ MenuState.prototype.update = function (dt) {
 }
 
 MenuState.prototype.click = function (e, pos) {
-	if(this.playBtn.containsPoint(pos.x, pos.y)) {
-		
+	if (this.playBtn.containsPoint(pos.x, pos.y)) {
+		console.log("[[PLAY]]");
+		return new PlayState();
 	}
+	return null;
+}
+
+function PlayState() {
+
+}
+
+PlayState.prototype.draw = function () {
+
+}
+
+PlayState.prototype.update = function (dt) {
+
+}
+
+PlayState.prototype.click = function (e, pos) {
+	return null;
 }
 
 function Game(canvasId) {
 	console.log("[[INIT]]");
 
-	var canvas = new GameCanvas(canvasId);
+	canvas = new GameCanvas(canvasId);
 
-	var wait = 25;
+	var fps = 30;
+	var wait = Math.round(1000/fps);
 
 	var state = new MenuState();
 
@@ -104,18 +123,26 @@ function Game(canvasId) {
 			x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
 			y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
 		}
-		x -= c.offsetLeft;
-		y -= c.offsetTop;
-		
-		state.click(e, {
+		x -= canvas.offsetLeft;
+		y -= canvas.offsetTop;
+
+		var result = state.click(e, {
 			x: x,
 			y: y
 		});
+		if (result) {
+			state = result;
+		}
 	});
 
 	setInterval(function () {
+		canvas.clear(palette["dark"]);
 		state.draw(canvas);
-		state.update(wait);
+
+		var result = state.update(wait);
+		if (result) {
+			state = result;
+		}
 	}, wait)
 
 }
