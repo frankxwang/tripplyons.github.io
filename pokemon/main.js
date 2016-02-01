@@ -110,8 +110,8 @@ Pokemon.prototype.updateHTML = function ($el) {
 	$el.children[1].style.backgroundColor = color;
 
 	var $party = document.getElementById(party.htmlId);
-//	if (parseInt(getStyle($el, "height")) !== parseInt(getStyle($party, "height"))) {
-	if(!this.positionCorrected) {
+	//	if (parseInt(getStyle($el, "height")) !== parseInt(getStyle($party, "height"))) {
+	if (!this.positionCorrected) {
 		$el.style.paddingTop = (parseInt(getStyle($party, "height")) - parseInt(getStyle($el, "height"))).toString() + "px";
 		this.positionCorrected = true;
 	}
@@ -126,9 +126,9 @@ var Party = function (pokes, htmlId) {
 	this.current = 0;
 	this.htmlId = htmlId;
 
-	//	this.doWhenAll(function () {
-	//		this.updateHTML();
-	//	});
+	this.doWhenAll(function () {
+		this.updateHTML();
+	});
 };
 
 Party.prototype.doWhenAll = function (callback) {
