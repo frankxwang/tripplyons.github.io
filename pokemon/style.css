@@ -1,17 +1,28 @@
 .pokelist {
 	list-style: none;
+	overflow-y: hidden;
 }
 
 .pokelist li {
 	display: inline-block;
+	padding: 6px;
+	padding-bottom: 0px;
+	max-height: 122px;
+	width: 96px;
 }
 
 .pokelist > li > img {
-	display: block;
+	display: inline-block;
+/*	display: block;*/
+	margin-left: auto;
+	margin-right: auto;
+/*	vertical-align: bottom;*/
 }
 
 .pokelist > li > div {
-	display: block;
+	display: inline-block;
+/*	display: block;*/
+/*	vertical-align: bottom;*/
 }
 
 .translucent {
@@ -30,6 +41,16 @@
 
 #result {
 	max-height: 4.0rem;
+}
+
+.current {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 116px;
+	width: 96px;
+	background-color: #f2f2f2;
+	z-index: -1;
 }
 
 @media (max-width: 40.0rem) {

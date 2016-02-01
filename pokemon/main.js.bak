@@ -1,3 +1,32 @@
+function getStyle(a, c) {
+	var b;
+	if ((b = (a.ownerDocument || document).defaultView) && b.getComputedStyle) return c = c.replace(/([A-Z])/g, "-$1").toLowerCase(), b.getComputedStyle(a, null).getPropertyValue(c);
+	if (a.currentStyle) return c = c.replace(/\-(\w)/g, function (a, b) {
+		return b.toUpperCase()
+	}), b = a.currentStyle[c], /^\d+(em|pt|%|ex)?$/i.test(b) ? function (b) {
+		var c = a.style.left,
+			d = a.runtimeStyle.left;
+		a.runtimeStyle.left = a.currentStyle.left;
+		a.style.left = b || 0;
+		b = a.style.pixelLeft + "px";
+		a.style.left = c;
+		a.runtimeStyle.left =
+			d;
+		return b
+	}(b) : b
+};
+
+function getOffset( el ) {
+    var _x = 0;
+    var _y = 0;
+    while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
+        _x += el.offsetLeft - el.scrollLeft;
+        _y += el.offsetTop - el.scrollTop;
+        el = el.offsetParent;
+    }
+    return { top: _y, left: _x };
+}
+
 var getText = function () {
 	return document.getElementById("result").innerText;
 }
@@ -77,38 +106,50 @@ Pokemon.prototype.updateHTML = function ($el) {
 	$el.children[1].style.backgroundColor = color;
 }
 
-var Party = function (pokes) {
-	this.pokes = pokes;
+///////////
+// PARTY //
+///////////
 
+var Party = function (pokes, htmlId) {
+	this.pokes = pokes;
+	this.current = 0;
+	this.htmlId = htmlId;
+
+	this.doWhenAll(function () {
+		this.updateHTML();
+	});
+};
+
+Party.prototype.doWhenAll = function (callback) {
 	this.pokes[0].dataPromise.then(function (res) {
 		this.pokes[0].init(res);
-		if (pokes.length === 1) {
-			this.updateHTML();
+		if (this.pokes.length === 1) {
+			callback.apply(this, []);
 		} else {
 			this.pokes[1].dataPromise.then(function (res) {
 				this.pokes[1].init(res);
-				if (pokes.length === 2) {
-					this.updateHTML();
+				if (this.pokes.length === 2) {
+					callback.apply(this, []);
 				} else {
 					this.pokes[2].dataPromise.then(function (res) {
 						this.pokes[2].init(res);
-						if (pokes.length === 3) {
-							this.updateHTML();
+						if (this.pokes.length === 3) {
+							callback.apply(this, []);
 						} else {
 							this.pokes[3].dataPromise.then(function (res) {
 								this.pokes[3].init(res);
-								if (pokes.length === 4) {
-									this.updateHTML();
+								if (this.pokes.length === 4) {
+									callback.apply(this, []);
 								} else {
 									this.pokes[4].dataPromise.then(function (res) {
 										this.pokes[4].init(res);
-										if (pokes.length === 5) {
-											this.updateHTML();
+										if (this.pokes.length === 5) {
+											callback.apply(this, []);
 										} else {
 											this.pokes[5].dataPromise.then(function (res) {
 												this.pokes[5].init(res);
-												if (pokes.length === 6) {
-													this.updateHTML();
+												if (this.pokes.length === 6) {
+													callback.apply(this, []);
 												} else {
 													console.error(">6 PKMN");
 												}
@@ -123,40 +164,57 @@ var Party = function (pokes) {
 			}.bind(this));
 		}
 	}.bind(this));
-};
+}
 
 Party.prototype.updateHTML = function () {
-	var $party = document.getElementById("yourpokes");
+	var $party = document.getElementById(this.htmlId);
 
 	for (var i = 0; i < this.pokes.length; i++) {
+		console.log(i);
+		if (i === this.current) {
+			var div = $party.getElementsByClassName("current")[0];
+//			offsetTop = document.body.getBoundingClientRect().top - $party.children[i].getBoundingClientRect().top;
+			var offset = getOffset($party.children[i]);
+			div.style.top  = $party.children[i].getBoundingClientRect().top.toString()  + "px";
+			div.style.left = $party.children[i].getBoundingClientRect().left.toString() + "px";
+		}
+
 		this.pokes[i].updateHTML($party.children[i]);
-		//		$party.children[i].innerHTML = '<img src="' + imgBaseUrl + this.pokes[i].data['name'].toLowerCase() + '.gif" alt="' + this.pokes[i].data['name'] + '">';
+
+//		console.log(parseInt(getStyle($party.children[i], "height")));
+//		if (parseInt(getStyle($party.children[i], "height")) !== 122) {
+//			$party.children[i].style.paddingTop = (128 - parseInt(getStyle($party.children[i], "height"))).toString() + "px";
+//		}
 	}
 };
 
 var partyArr = [
-	new Pokemon(1, 5),
 	new Pokemon(4, 5),
-	new Pokemon(7, 5)
+	new Pokemon(493, 100)
 ];
 
-var party = new Party(partyArr);
+var party = new Party(partyArr, "yourpokes");
 
 var commandWord = '';
 var args = [];
 
+var battling = false;
+
 var execCommand = function () {
-	if (commandWord == 'set') {
+	if (commandWord === 'set') {
 		if (args.length >= 3 && args[0] <= partyArr.length + 1 && args[0] >= 1 && 1 <= args[2] <= 100) {
 			if (args[0] == partyArr.length + 1) {
 				partyArr.push(new Pokemon(args[1], args[2]));
 			} else {
 				partyArr[args[0] - 1] = new Pokemon(args[1], args[2]);
 			}
-			party = new Party(partyArr);
+			party = new Party(partyArr, "yourpokes");
 		} else {
 			console.error("[[SET FAILED: " + JSON.stringify(args) + " ]]");
 		}
+	}
+	if (commandWord === 'battle') {
+		battling = true;
 	}
 
 	commandWord = "";
@@ -173,7 +231,10 @@ var enterCommand = function (command) {
 		}
 	}
 
-	if (commandWord === 'set') {
+	if (commandWord === 'set' && !battling) {
+		execCommand();
+	}
+	if (commandWord === 'battle' && !battling) {
 		execCommand();
 	}
 }
