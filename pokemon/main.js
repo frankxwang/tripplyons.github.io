@@ -16,15 +16,18 @@ function getStyle(a, c) {
 	}(b) : b
 };
 
-function getOffset( el ) {
-    var _x = 0;
-    var _y = 0;
-    while( el && !isNaN( el.offsetLeft ) && !isNaN( el.offsetTop ) ) {
-        _x += el.offsetLeft - el.scrollLeft;
-        _y += el.offsetTop - el.scrollTop;
-        el = el.offsetParent;
-    }
-    return { top: _y, left: _x };
+function getOffset(el) {
+	var _x = 0;
+	var _y = 0;
+	while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+		_x += el.offsetLeft - el.scrollLeft;
+		_y += el.offsetTop - el.scrollTop;
+		el = el.offsetParent;
+	}
+	return {
+		top: _y,
+		left: _x
+	};
 }
 
 var getText = function () {
@@ -169,23 +172,21 @@ Party.prototype.doWhenAll = function (callback) {
 Party.prototype.updateHTML = function () {
 	var $party = document.getElementById(this.htmlId);
 
+	var div = $party.getElementsByClassName("current")[0];
+	var offset = getOffset($party.children[i]);
+	console.log($party.children[this.current].getBoundingClientRect().top.toString() + "px");
+	div.style.top = $party.getBoundingClientRect().top.toString() + "px";
+	div.style.left = $party.children[this.current].getBoundingClientRect().left.toString() + "px";
+
 	for (var i = 0; i < this.pokes.length; i++) {
 		console.log(i);
-		if (i === this.current) {
-			var div = $party.getElementsByClassName("current")[0];
-//			offsetTop = document.body.getBoundingClientRect().top - $party.children[i].getBoundingClientRect().top;
-			var offset = getOffset($party.children[i]);
-			console.log($party.children[i].getBoundingClientRect().top.toString()  + "px");
-			div.style.top  = $party.getBoundingClientRect().top.toString()  + "px";
-			div.style.left = $party.children[i].getBoundingClientRect().left.toString() + "px";
-		}
 
 		this.pokes[i].updateHTML($party.children[i]);
 
-//		console.log(parseInt(getStyle($party.children[i], "height")));
-//		if (parseInt(getStyle($party.children[i], "height")) !== 122) {
-//			$party.children[i].style.paddingTop = (128 - parseInt(getStyle($party.children[i], "height"))).toString() + "px";
-//		}
+		//		console.log(parseInt(getStyle($party.children[i], "height")));
+		//		if (parseInt(getStyle($party.children[i], "height")) !== 122) {
+		//			$party.children[i].style.paddingTop = (128 - parseInt(getStyle($party.children[i], "height"))).toString() + "px";
+		//		}
 	}
 };
 
