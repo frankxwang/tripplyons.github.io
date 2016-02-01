@@ -75,6 +75,7 @@ var imgBaseUrl = 'http://img.pokemondb.net/sprites/black-white/anim/normal/'; //
 var Pokemon = function (number) {
 	this.num = number;
 	this.dataPromise = readJSON('http://pokeapi.co/api/v1/pokemon/' + this.num.toString() + '/');
+	this.positionCorrected = false;
 };
 
 Pokemon.prototype.init = function (res) {
@@ -107,6 +108,13 @@ Pokemon.prototype.updateHTML = function ($el) {
 		}
 	}
 	$el.children[1].style.backgroundColor = color;
+
+	var $party = document.getElementById(party.htmlId);
+//	if (parseInt(getStyle($el, "height")) !== parseInt(getStyle($party, "height"))) {
+	if(!this.positionCorrected) {
+		$el.style.paddingTop = (parseInt(getStyle($party, "height")) - parseInt(getStyle($el, "height"))).toString() + "px";
+		this.positionCorrected = true;
+	}
 }
 
 ///////////
@@ -118,9 +126,9 @@ var Party = function (pokes, htmlId) {
 	this.current = 0;
 	this.htmlId = htmlId;
 
-	this.doWhenAll(function () {
-		this.updateHTML();
-	});
+	//	this.doWhenAll(function () {
+	//		this.updateHTML();
+	//	});
 };
 
 Party.prototype.doWhenAll = function (callback) {
@@ -170,32 +178,41 @@ Party.prototype.doWhenAll = function (callback) {
 }
 
 Party.prototype.updateHTML = function () {
-	var $party = document.getElementById(this.htmlId);
+	this.doWhenAll(function () {
+		var $party = document.getElementById(this.htmlId);
 
-	var div = $party.getElementsByClassName("current")[0];
-	var offset = getOffset($party.children[i]);
-	console.log($party.children[this.current].getBoundingClientRect().top.toString() + "px");
-	div.style.top = $party.getBoundingClientRect().top.toString() + "px";
-	div.style.left = $party.children[this.current].getBoundingClientRect().left.toString() + "px";
+		for (var i = 0; i < this.pokes.length; i++) {
 
-	for (var i = 0; i < this.pokes.length; i++) {
-		console.log(i);
+			$party = document.getElementById(party.htmlId);
 
-		this.pokes[i].updateHTML($party.children[i]);
+			this.pokes[i].updateHTML($party.children[i]);
 
-		//		console.log(parseInt(getStyle($party.children[i], "height")));
-		//		if (parseInt(getStyle($party.children[i], "height")) !== 122) {
-		//			$party.children[i].style.paddingTop = (128 - parseInt(getStyle($party.children[i], "height"))).toString() + "px";
-		//		}
-	}
+			//		console.log(parseInt(getStyle($party.children[i], "height")));
+			//		if (parseInt(getStyle($party.children[i], "height")) !== 122) {
+			//			$party.children[i].style.paddingTop = (128 - parseInt(getStyle($party.children[i], "height"))).toString() + "px";
+			//		}
+		}
+
+		var div = $party.getElementsByClassName("current")[0];
+		var offset = getOffset($party.children[i]);
+		//	console.log($party.children[this.current].getBoundingClientRect().top.toString() + "px");
+		div.style.top = $party.getBoundingClientRect().top.toString() + "px";
+		div.style.left = $party.children[this.current].getBoundingClientRect().left.toString() + "px";
+
+		//	div.style.left = getOffset($party.children[this.current]).left.toString() + "px";
+	});
 };
 
 var partyArr = [
-	new Pokemon(4, 5),
-	new Pokemon(493, 100)
+	new Pokemon(4, 5)
+];
+
+var opposingParty = [
+	new Pokemon(7, 5)
 ];
 
 var party = new Party(partyArr, "yourpokes");
+//var opposing = new Party(opposingParty, "opposingpokes");
 
 var commandWord = '';
 var args = [];
@@ -246,3 +263,10 @@ var submit = function () {
 	enterCommand(document.getElementById("input").value);
 	document.getElementById("input").value = "";
 }
+
+var update = function () {
+	party.updateHTML();
+}
+
+window.onresize = update;
+window.onscroll = update;
