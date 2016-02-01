@@ -175,7 +175,8 @@ Party.prototype.updateHTML = function () {
 			var div = $party.getElementsByClassName("current")[0];
 //			offsetTop = document.body.getBoundingClientRect().top - $party.children[i].getBoundingClientRect().top;
 			var offset = getOffset($party.children[i]);
-			div.style.top  = $party.children[i].getBoundingClientRect().top.toString()  + "px";
+			console.log($party.children[i].getBoundingClientRect().top.toString()  + "px");
+			div.style.top  = $party.getBoundingClientRect().top.toString()  + "px";
 			div.style.left = $party.children[i].getBoundingClientRect().left.toString() + "px";
 		}
 
