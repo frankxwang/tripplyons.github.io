@@ -1,10 +1,22 @@
 .header {
-	width: 100vw;
+	width: 100%;
+	max-width: 100%;
 	height: 100vh;
-	max-width: 100vw;
 	max-height: 100vh;
+	
 	overflow: hidden;
-	background-color: $color-tertiary;
-	padding-top: 4.0rem;
 	text-align: center;
+//	background-color: $color-tertiary;
+	padding-top: 4.0rem;
+	padding-left: 2.0rem;
+	padding-right: 2.0rem;
+	
+	background-image: url(../img/code.jpg);
+	
+	color: $color-initial;//primary;
+	
+	h1 {
+		font-size: 6.4rem;
+//		color: $color-primary;
+	}
 }
