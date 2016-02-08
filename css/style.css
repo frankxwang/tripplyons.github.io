@@ -661,5 +661,5 @@ h6 {
 }
 
 h3 > a > i {
-  vertical-align: baseline;
+  vertical-align: text-bottom;
 }
