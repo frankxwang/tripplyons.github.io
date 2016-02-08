@@ -660,6 +660,6 @@ h6 {
   padding: 1.0rem 2.0rem;
 }
 
-h3 > a {
+h3 > a > i {
   vertical-align: baseline;
 }
