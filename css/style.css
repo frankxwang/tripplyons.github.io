@@ -659,3 +659,7 @@ h6 {
   color: #75685f;
   padding: 1.0rem 2.0rem;
 }
+
+h3 > a {
+  vertical-align: baseline;
+}
