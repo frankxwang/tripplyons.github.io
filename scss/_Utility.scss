@@ -1,7 +1,5 @@
-
 // Utility
 // ––––––––––––––––––––––––––––––––––––––––––––––––––
-
 // Float either direction
 .float-right {
 	float: right;
@@ -11,16 +9,18 @@
 	float: left;
 }
 
+.center {
+	text-align: center;
+}
+
 // Clear a float with .clearfix
 .clearfix {
 	*zoom: 1;
-
 	&:after,
 	&:before {
 		content: '';
 		display: table;
 	}
-
 	&:after {
 		clear: both;
 	}

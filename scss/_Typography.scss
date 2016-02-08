@@ -1,7 +1,5 @@
-
 // Typography
 // ––––––––––––––––––––––––––––––––––––––––––––––––––
-
 p {
 	margin-top: 0;
 }
@@ -53,29 +51,36 @@ h6 {
 	line-height: 1.4;
 }
 
+.material-icons {
+	color: $color-primary;
+	font-size: 36px;
+}
+
+.highlight {
+	color: $color-primary;
+}
+
 // Larger than mobile screen
 @media (min-width: 40.0rem) {
 	h1 {
 		font-size: 5.0rem;
 	}
-
 	h2 {
 		font-size: 4.2rem;
 	}
-
 	h3 {
 		font-size: 3.6rem;
 	}
-
 	h4 {
 		font-size: 3.0rem;
 	}
-
 	h5 {
 		font-size: 2.4rem;
 	}
-
 	h6 {
 		font-size: 1.5rem;
+	}
+	.material-icons {
+		font-size: 48px;
 	}
 }
