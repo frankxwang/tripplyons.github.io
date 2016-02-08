@@ -6,7 +6,8 @@
 	overflow: hidden;
 	text-align: center;
 	padding-top: 4.0rem;
-	background: url(../img/code.jpg) cover;
+	background-image: url(../img/code.jpg);
+	background-size: cover;
 	h1 {
 		font-size: 6.4rem;
 		color: $color-initial;
