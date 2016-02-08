@@ -449,11 +449,6 @@ hr {
   margin-top: 3rem;
 }
 
-/* line 12, ../scss/_Misc.scss */
-h3 > a {
-  color: #75685f;
-}
-
 /* line 6, ../scss/_Spacing.scss */
 .button,
 button {
