@@ -8,3 +8,7 @@ hr {
 	margin-bottom: 3.5rem;
 	margin-top: 3rem;
 }
+
+h3 > a {
+	color: $color-secondary;
+}

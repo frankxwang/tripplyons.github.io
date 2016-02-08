@@ -3,7 +3,7 @@ var high = 0;
 var initCountdown = 16;
 var countdown = initCountdown;
 
-var promptVal = prompt("memory?");
+var promptVal = "";//prompt("memory?");
 
 var tempmem = (promptVal)?
     null :
