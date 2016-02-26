@@ -1,272 +1,312 @@
-function getStyle(a, c) {
-	var b;
-	if ((b = (a.ownerDocument || document).defaultView) && b.getComputedStyle) return c = c.replace(/([A-Z])/g, "-$1").toLowerCase(), b.getComputedStyle(a, null).getPropertyValue(c);
-	if (a.currentStyle) return c = c.replace(/\-(\w)/g, function (a, b) {
-		return b.toUpperCase()
-	}), b = a.currentStyle[c], /^\d+(em|pt|%|ex)?$/i.test(b) ? function (b) {
-		var c = a.style.left,
-			d = a.runtimeStyle.left;
-		a.runtimeStyle.left = a.currentStyle.left;
-		a.style.left = b || 0;
-		b = a.style.pixelLeft + "px";
-		a.style.left = c;
-		a.runtimeStyle.left =
-			d;
-		return b
-	}(b) : b
-};
-
-function getOffset(el) {
-	var _x = 0;
-	var _y = 0;
-	while (el && !isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-		_x += el.offsetLeft - el.scrollLeft;
-		_y += el.offsetTop - el.scrollTop;
-		el = el.offsetParent;
-	}
-	return {
-		top: _y,
-		left: _x
-	};
-}
-
-var getText = function () {
-	return document.getElementById("result").innerText;
-}
-
-var show = function (text) {
-	document.getElementById("result").innerText = text;
-};
-
-var log = function (text) {
-	console.log(text);
-	if (getText() === "") {
-		show(text);
-	} else {
-		show(getText() + "\n" + text);
+var tilesize = 32;
+var keys = [
+	false,
+	false,
+	false,
+	false,
+	false
+];
+var oldkeys = keys;
+var UP = 0;
+var DOWN = 1;
+var LEFT = 2;
+var RIGHT = 3;
+var ACTION = 4;
+var canvaswidth;
+var canvasheight;
+var shownTilesWidth;
+var shownTilesHeight;
+var playerx = 7;
+var playery = 4;
+var playerscreenx;
+var playerscreeny;
+var playerdir = DOWN;
+var playerstopping = false;
+var fps = 60;
+var dt = Math.round(1000 / fps);
+// DT in Seconds
+var dts = dt / 1000;
+var playermoving = false;
+var playeranim = ["1", "2", "1", "3"];
+var pressingsign = false;
+var amountperanimframe = 4;
+var newarr = [];
+for (var i = 0; i < playeranim.length; i++) {
+	for (var j = 0; j < amountperanimframe; j++) {
+		newarr.push(playeranim[i]);
 	}
 }
+playeranim = newarr;
+var currentanimindex = 0;
+var state = "overworld";
 
-// http://stackoverflow.com/questions/22780430/javascript-xmlhttprequest-using-jsonp
-var jsonp = function (url, callback) {
-	var callbackName = 'jsonp_callback_' + Math.round(100000 * Math.random());
-	window[callbackName] = function (data) {
-		delete window[callbackName];
-		document.body.removeChild(script);
-		//			callback(data);
-		callback.apply(this, [data]);
-	};
+var battlebg = new Image();
+battlebg.src = "battlebg.png";
+var menu = new Image();
+menu.src = "menu.png";
 
-	var script = document.createElement('script');
-	script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
-	document.body.appendChild(script);
-};
+var textbeingshown = null;
 
-function readJSON(url, arr) {
-	return new Promise(function (fulfill, reject) {
-		if (arr) {
-			arr.push(jsonp(url, fulfill));
-		}
-		return jsonp(url, fulfill);
-	});
-}
-var imgBaseUrl = 'http://img.pokemondb.net/sprites/black-white/anim/normal/'; //'http://www.pokestadium.com/sprites/black-white/animated/';
-
-var Pokemon = function (number) {
-	this.num = number;
-	this.dataPromise = readJSON('http://pokeapi.co/api/v1/pokemon/' + this.num.toString() + '/');
-	this.positionCorrected = false;
-};
-
-Pokemon.prototype.init = function (res) {
-	show(JSON.stringify(res));
-	this.data = res;
-	this.getReady();
-}
-
-Pokemon.prototype.getReady = function () {
-	this.hp = this.data["hp"]; //Math.round(this.data["hp"] * Math.random());
-}
-
-Pokemon.prototype.updateHTML = function ($el) {
-	$el.innerHTML = '<img src="' + imgBaseUrl + this.data['name'].toLowerCase() + '.gif" alt="' + this.data['name'] + '">';
-	var val = this.hp / this.data["hp"] / 2 + 0.5;
-	val = val > 1 ? 1 : val;
-	$el.children[0].style.opacity = val;
-
-	$el.innerHTML += '<div></div>';
-
-	val = this.hp / this.data["hp"];
-
-	$el.children[1].style.width = (val * 100).toString() + "%";
-	$el.children[1].style.height = "16px";
-	var color = "#cc3f33";
-	if (val * 8 > 1) {
-		color = "#cccc28";
-		if (val * 3 > 1) {
-			color = "#1ecc1e";
-		}
-	}
-	$el.children[1].style.backgroundColor = color;
-
-	var $party = document.getElementById(party.htmlId);
-	//	if (parseInt(getStyle($el, "height")) !== parseInt(getStyle($party, "height"))) {
-	if (!this.positionCorrected) {
-		$el.style.paddingTop = (parseInt(getStyle($party, "height")) - parseInt(getStyle($el, "height"))).toString() + "px";
-		this.positionCorrected = true;
-	}
-}
-
-///////////
-// PARTY //
-///////////
-
-var Party = function (pokes, htmlId) {
-	this.pokes = pokes;
-	this.current = 0;
-	this.htmlId = htmlId;
-
-	this.doWhenAll(function () {
-		this.updateHTML();
-	});
-};
-
-Party.prototype.doWhenAll = function (callback) {
-	this.pokes[0].dataPromise.then(function (res) {
-		this.pokes[0].init(res);
-		if (this.pokes.length === 1) {
-			callback.apply(this, []);
-		} else {
-			this.pokes[1].dataPromise.then(function (res) {
-				this.pokes[1].init(res);
-				if (this.pokes.length === 2) {
-					callback.apply(this, []);
-				} else {
-					this.pokes[2].dataPromise.then(function (res) {
-						this.pokes[2].init(res);
-						if (this.pokes.length === 3) {
-							callback.apply(this, []);
-						} else {
-							this.pokes[3].dataPromise.then(function (res) {
-								this.pokes[3].init(res);
-								if (this.pokes.length === 4) {
-									callback.apply(this, []);
-								} else {
-									this.pokes[4].dataPromise.then(function (res) {
-										this.pokes[4].init(res);
-										if (this.pokes.length === 5) {
-											callback.apply(this, []);
-										} else {
-											this.pokes[5].dataPromise.then(function (res) {
-												this.pokes[5].init(res);
-												if (this.pokes.length === 6) {
-													callback.apply(this, []);
-												} else {
-													console.error(">6 PKMN");
-												}
-											}.bind(this));
-										}
-									}.bind(this));
-								}
-							}.bind(this));
-						}
-					}.bind(this));
-				}
-			}.bind(this));
-		}
-	}.bind(this));
-}
-
-Party.prototype.updateHTML = function () {
-	this.doWhenAll(function () {
-		var $party = document.getElementById(this.htmlId);
-
-		for (var i = 0; i < this.pokes.length; i++) {
-
-			$party = document.getElementById(party.htmlId);
-
-			this.pokes[i].updateHTML($party.children[i]);
-
-			//		console.log(parseInt(getStyle($party.children[i], "height")));
-			//		if (parseInt(getStyle($party.children[i], "height")) !== 122) {
-			//			$party.children[i].style.paddingTop = (128 - parseInt(getStyle($party.children[i], "height"))).toString() + "px";
-			//		}
-		}
-
-		var div = $party.getElementsByClassName("current")[0];
-		var offset = getOffset($party.children[i]);
-		//	console.log($party.children[this.current].getBoundingClientRect().top.toString() + "px");
-		div.style.top = $party.getBoundingClientRect().top.toString() + "px";
-		div.style.left = $party.children[this.current].getBoundingClientRect().left.toString() + "px";
-
-		//	div.style.left = getOffset($party.children[this.current]).left.toString() + "px";
-	});
-};
-
-var partyArr = [
-	new Pokemon(4, 5)
+var directiontable = [
+	"u",
+	"d",
+	"l",
+	"r"
 ];
 
-var opposingParty = [
-	new Pokemon(7, 5)
-];
+var playeranimimg = {};
+for (var i = 0; i < 4; i++) {
+	for (var j = 1; j <= 3; j++) {
+		playeranimimg[directiontable[i] + j.toString()] = new Image();
+		playeranimimg[directiontable[i] + j.toString()].src = directiontable[i] + j.toString() + ".png";
+	}
+}
 
-var party = new Party(partyArr, "yourpokes");
-//var opposing = new Party(opposingParty, "opposingpokes");
+document.addEventListener("keydown", function (e) {
+	e = e || window.event;
+	if (e.keyCode == 38) {
+		keys[UP] = true;
+	}
+	if (e.keyCode == 40) {
+		keys[DOWN] = true;
+	}
+	if (e.keyCode == 37) {
+		keys[LEFT] = true;
+	}
+	if (e.keyCode == 39) {
+		keys[RIGHT] = true;
+	}
+	if (e.keyCode == 32) {
+		keys[ACTION] = true;
+	}
+});
+document.addEventListener("keyup", function (e) {
+	e = e || window.event;
+	if (e.keyCode == 38) {
+		keys[UP] = false;
+	}
+	if (e.keyCode == 40) {
+		keys[DOWN] = false;
+	}
+	if (e.keyCode == 37) {
+		keys[LEFT] = false;
+	}
+	if (e.keyCode == 39) {
+		keys[RIGHT] = false;
+	}
+	if (e.keyCode == 32) {
+		keys[ACTION] = false;
+		pressingsign = false;
+	}
+});
 
-var commandWord = '';
-var args = [];
+var playermovecamerainterval = 0.0625;
 
-var battling = false;
+window.onload = function () {
+	var canvas = document.getElementById("canvas");
+	var ctx = canvas.getContext("2d");
+	canvaswidth = parseInt(getStyle(canvas, "width"));
+	canvasheight = parseInt(getStyle(canvas, "height"));
+	var tileset = new Image();
+	tileset.src = "tiles.png";
+	shownTilesWidth = canvaswidth / tilesize;
+	shownTilesHeight = canvasheight / tilesize;
+	playerscreenx = canvaswidth / 2 - tilesize / 2;
+	playerscreeny = canvasheight / 2 - tilesize / 2;
 
-var execCommand = function () {
-	if (commandWord === 'set') {
-		if (args.length >= 3 && args[0] <= partyArr.length + 1 && args[0] >= 1 && 1 <= args[2] <= 100) {
-			if (args[0] == partyArr.length + 1) {
-				partyArr.push(new Pokemon(args[1], args[2]));
-			} else {
-				partyArr[args[0] - 1] = new Pokemon(args[1], args[2]);
+
+	// TREE:
+	//  /\
+	//  {}
+	//  []
+	//
+	// TWO TREE TRUNK TO TOP CONNECTOR
+	//  ()
+	var data = ["}{}{}{}{}{}{}{}{}{}{}{}{}{}{",
+				")()()()()()()()()()()()()()(",
+				"}{}{}{}{}{}{}{}{}{}{}{}{}{}{",
+				")()()()[][][][][][][]()()()(",
+			    "}{}{}{}...@..........{}{}{}{",
+			    ")()()()....../\\......()()()(",
+			    "}{}{}{}.####.{}.####.{}{}{}{",
+			    ")()()().####.().####.()()()(",
+			    "}{}{}{}.####.{}.####.{}{}{}{",
+			    ")()()().####.[].####.()()()(",
+			    "}{}{}{}..............{}{}{}{",
+			    ")()()()/\\/\\/\\/\\/\\/\\/\\()()()(",
+				"}{}{}{}{}{}{}{}{}{}{}{}{}{}{",
+				")()()()()()()()()()()()()()(",
+				"}{}{}{}{}{}{}{}{}{}{}{}{}{}{"]
+
+	var datamap = {
+		".": new TileType("grass", 1, 0, true),
+		"#": new TileType("tallgrass", 2, 0, true),
+		"/": new TileType("treetopleft", 3, 0, false),
+		"\\": new TileType("treetopright", 4, 0, false),
+		"{": new TileType("treemidleft", 3, 1, false),
+		"}": new TileType("treemidright", 4, 1, false),
+		"[": new TileType("treebottomleft", 3, 2, false),
+		"]": new TileType("treebottomright", 4, 2, false),
+		"(": new TileType("treebothleft", 5, 0, false),
+		")": new TileType("treebothright", 6, 0, false),
+		"@": new Sign("Welcome to Pokemon!")
+	};
+
+	var map = new Map(tileset, data, datamap);
+
+	var draw = function () {
+		if (state === "overworld") {
+			ctx.fillStyle = "#000000";
+			ctx.fillRect(0, 0, canvaswidth, canvasheight);
+			ctx.save();
+			map.draw(ctx);
+
+			ctx.translate(-playerx * tilesize, -playery * tilesize);
+			ctx.restore();
+
+			ctx.drawImage(playeranimimg[directiontable[playerdir] + playeranim[currentanimindex]], playerscreenx, playerscreeny - 6);
+
+			if (textbeingshown) {
+				ctx.drawImage(menu, 16, 208);
+				ctx.fillStyle = "#202020";
+				ctx.font = "12px monospace";
+				ctx.fillText(textbeingshown, 48, 236);
 			}
-			party = new Party(partyArr, "yourpokes");
-		} else {
-			console.error("[[SET FAILED: " + JSON.stringify(args) + " ]]");
-		}
-	}
-	if (commandWord === 'battle') {
-		battling = true;
-	}
-
-	commandWord = "";
-	args = [];
-}
-
-var enterCommand = function (command) {
-	var arr = command.split(" ");
-	commandWord = arr[0];
-	args = arr.slice(1, arr.length);
-	for (var i = 0; i < args.length; i++) {
-		if (args[i].match(/[0-9]+/)) {
-			args[i] = parseInt(args[i]);
+		} else if (state === "battle") {
+			ctx.fillStyle = "#000000";
+			ctx.fillRect(0, 0, canvaswidth, canvasheight);
+			ctx.drawImage(battlebg, 0, 0);
 		}
 	}
 
-	if (commandWord === 'set' && !battling) {
-		execCommand();
+	var moveplayer = function () {
+		if ((playerdir === UP && playery === 0) ||
+			(playerdir === DOWN && playery === map.data.length - 1) ||
+			(playerdir === LEFT && playerx === 0) ||
+			(playerdir === RIGHT && playerx === map.data[0].length - 1))
+			return;
+		if (!((playerdir === DOWN && map.get(playerx, Math.floor(playery) + 1).passable) ||
+				(playerdir === UP && map.get(playerx, Math.ceil(playery) - 1).passable) ||
+				(playerdir === LEFT && map.get(Math.ceil(playerx) - 1, playery).passable) ||
+				(playerdir === RIGHT && map.get(Math.floor(playerx) + 1, playery).passable)))
+			return;
+		if (playermoving) {
+			if (playerdir == UP) {
+				playery -= playermovecamerainterval;
+			}
+			if (playerdir == DOWN) {
+				playery += playermovecamerainterval;
+			}
+			if (playerdir == LEFT) {
+				playerx -= playermovecamerainterval;
+			}
+			if (playerdir == RIGHT) {
+				playerx += playermovecamerainterval;
+			}
+
+			if (playerx < 0) {
+				playerx = 0;
+			}
+			if (playery < 0) {
+				playery = 0;
+			}
+			if (playerx > map.data[0].length - 1) {
+				playerx = map.data[0].length - 1;
+			}
+			if (playery > map.data.length - 1) {
+				playery = map.data.length - 1;
+			}
+		}
 	}
-	if (commandWord === 'battle' && !battling) {
-		execCommand();
+
+	var onblock = function () {
+		return playerx.toPrecision(5) % 1.0 === 0 && playery.toPrecision(5) % 1.0 === 0;
 	}
-}
 
-var submit = function () {
-	show(document.getElementById("input").value);
-	enterCommand(document.getElementById("input").value);
-	document.getElementById("input").value = "";
-}
+	var directionplayer = function (dir) {
+		if (onblock()) {
+			if (map.get(playerx, playery).name === "tallgrass" && Math.floor(Math.random() * 7) === 0) {
+				state = "battle"
+			} else {
+				playerdir = dir;
+			}
+		}
+	}
 
-var update = function () {
-	party.updateHTML();
-}
+	tileset.onload = function () {
+		setInterval(function () {
+			draw();
 
-window.onresize = update;
-window.onscroll = update;
+			if (state === "overworld") {
+				if (!textbeingshown) {
+					if (keys[UP]) {
+						directionplayer(UP);
+						if (playerdir === UP) {
+							playermoving = true;
+						}
+					} else if (playerdir === UP) {
+						playerstopping = true;
+					}
+					if (keys[DOWN]) {
+						directionplayer(DOWN);
+						if (playerdir === DOWN) {
+							playermoving = true;
+						}
+					} else if (playerdir === DOWN) {
+						playerstopping = true;
+					}
+					if (keys[LEFT]) {
+						directionplayer(LEFT);
+						if (playerdir === LEFT) {
+							playermoving = true;
+						}
+					} else if (playerdir === LEFT) {
+						playerstopping = true;
+					}
+					if (keys[RIGHT]) {
+						directionplayer(RIGHT);
+						if (playerdir === RIGHT) {
+							playermoving = true;
+						}
+					} else if (playerdir === RIGHT) {
+						playerstopping = true;
+					}
+
+
+					if (playermoving) {
+						currentanimindex++;
+						if (currentanimindex === playeranim.length) {
+							currentanimindex = 0;
+						}
+					}
+
+					moveplayer();
+
+					if (onblock()) {
+						currentanimindex = 0;
+					}
+
+					if (onblock() && playerstopping) {
+						playerstopping = false;
+						playermoving = false;
+					}
+				} else {
+					if(keys[ACTION] && !pressingsign) {
+						pressingsign = true;
+						textbeingshown = null;
+					}
+				}
+
+				if (playerdir === UP && keys[ACTION] && onblock() && map.get(playerx, playery - 1).name === "sign" && !pressingsign) {
+					pressingsign = true;
+					textbeingshown = map.get(playerx, playery - 1).text;
+				}
+			} else if (state === "battle") {
+				if (keys[ACTION]) {
+					state = "overworld";
+				}
+			}
+		}, dt);
+	}
+
+}
