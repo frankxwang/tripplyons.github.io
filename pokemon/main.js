@@ -16,8 +16,8 @@ var canvaswidth;
 var canvasheight;
 var shownTilesWidth;
 var shownTilesHeight;
-var playerx = 7;
-var playery = 4;
+var playerx;
+var playery;
 var playerscreenx;
 var playerscreeny;
 var playerdir = DOWN;
@@ -28,7 +28,7 @@ var dt = Math.round(1000 / fps);
 var dts = dt / 1000;
 var playermoving = false;
 var playeranim = ["1", "2", "1", "3"];
-var pressingsign = false;
+var pressingaction = false;
 var amountperanimframe = 4;
 var newarr = [];
 for (var i = 0; i < playeranim.length; i++) {
@@ -38,7 +38,7 @@ for (var i = 0; i < playeranim.length; i++) {
 }
 playeranim = newarr;
 var currentanimindex = 0;
-var state = "overworld";
+var state;
 
 var battlebg = new Image();
 battlebg.src = "battlebg.png";
@@ -96,7 +96,7 @@ document.addEventListener("keyup", function (e) {
 	}
 	if (e.keyCode == 32) {
 		keys[ACTION] = false;
-		pressingsign = false;
+		pressingaction = false;
 	}
 });
 
@@ -126,7 +126,7 @@ window.onload = function () {
 				")()()()()()()()()()()()()()(",
 				"}{}{}{}{}{}{}{}{}{}{}{}{}{}{",
 				")()()()[][][][][][][]()()()(",
-			    "}{}{}{}...@..........{}{}{}{",
+			    "}{}{}{}...@......$...{}{}{}{",
 			    ")()()()....../\\......()()()(",
 			    "}{}{}{}.####.{}.####.{}{}{}{",
 			    ")()()().####.().####.()()()(",
@@ -149,10 +149,25 @@ window.onload = function () {
 		"]": new TileType("treebottomright", 4, 2, false),
 		"(": new TileType("treebothleft", 5, 0, false),
 		")": new TileType("treebothright", 6, 0, false),
-		"@": new Sign("Welcome to Pokemon!")
+		"@": new Sign("Welcome to Pokemon! We have signs!"),
+		"$": new Sign("Here is another sign! It is long!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 	};
 
 	var map = new Map(tileset, data, datamap);
+
+	var setstate = function (name) {
+		if (name === "battle") {
+			pressingaction = keys[ACTION];
+			state = "battle";
+		}
+		if (name === "overworld") {
+			playerx = 7;
+			playery = 4;
+			state = "overworld";
+		}
+	}
+
+	setstate("overworld");
 
 	var draw = function () {
 		if (state === "overworld") {
@@ -165,19 +180,21 @@ window.onload = function () {
 			ctx.restore();
 
 			ctx.drawImage(playeranimimg[directiontable[playerdir] + playeranim[currentanimindex]], playerscreenx, playerscreeny - 6);
-
-			if (textbeingshown) {
-				ctx.drawImage(menu, 16, 208);
-				ctx.fillStyle = "#202020";
-				ctx.font = "12px monospace";
-				ctx.fillText(textbeingshown, 48, 236);
-			}
 		} else if (state === "battle") {
 			ctx.fillStyle = "#000000";
 			ctx.fillRect(0, 0, canvaswidth, canvasheight);
 			ctx.drawImage(battlebg, 0, 0);
 		}
+
+		if (textbeingshown) {
+			ctx.drawImage(menu, 16, 208);
+			ctx.fillStyle = "#202020";
+			ctx.font = "12px monospace";
+			ctx.fillText(textbeingshown, 48, 236, 384);
+		}
 	}
+
+
 
 	var moveplayer = function () {
 		if ((playerdir === UP && playery === 0) ||
@@ -226,7 +243,7 @@ window.onload = function () {
 	var directionplayer = function (dir) {
 		if (onblock()) {
 			if (map.get(playerx, playery).name === "tallgrass" && Math.floor(Math.random() * 7) === 0) {
-				state = "battle"
+				setstate("battle");
 			} else {
 				playerdir = dir;
 			}
@@ -291,18 +308,21 @@ window.onload = function () {
 						playermoving = false;
 					}
 				} else {
-					if(keys[ACTION] && !pressingsign) {
-						pressingsign = true;
+					if (keys[ACTION] && !pressingaction) {
+						pressingaction = true;
 						textbeingshown = null;
 					}
 				}
 
-				if (playerdir === UP && keys[ACTION] && onblock() && map.get(playerx, playery - 1).name === "sign" && !pressingsign) {
-					pressingsign = true;
+				if (playerdir === UP && keys[ACTION] && onblock() && map.get(playerx, playery - 1).name === "sign" && !pressingaction) {
+					pressingaction = true;
 					textbeingshown = map.get(playerx, playery - 1).text;
 				}
 			} else if (state === "battle") {
-				if (keys[ACTION]) {
+				textbeingshown = "LET\'S BATTLE!";
+				if (keys[ACTION] && !pressingaction) {
+					pressingaction = true;
+					textbeingshown = null;
 					state = "overworld";
 				}
 			}
