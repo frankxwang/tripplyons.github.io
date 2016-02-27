@@ -1,3 +1,8 @@
+var overworldmusic = new Audio("route-1.mp3");
+overworldmusic.play();
+overworldmusic.addEventListener("ended", function (e) {
+	overworldmusic.play();
+}, false);
 var tilesize = 32;
 var keys = [
 	false,
@@ -16,8 +21,8 @@ var canvaswidth;
 var canvasheight;
 var shownTilesWidth;
 var shownTilesHeight;
-var playerx;
-var playery;
+var playerx = 7;
+var playery = 4;
 var playerscreenx;
 var playerscreeny;
 var playerdir = DOWN;
@@ -157,12 +162,13 @@ window.onload = function () {
 
 	var setstate = function (name) {
 		if (name === "battle") {
+			overworldmusic.pause();
+			overworldmusic.currentTime = 0;
 			pressingaction = keys[ACTION];
 			state = "battle";
 		}
 		if (name === "overworld") {
-			playerx = 7;
-			playery = 4;
+			overworldmusic.play();
 			state = "overworld";
 		}
 	}
@@ -323,7 +329,7 @@ window.onload = function () {
 				if (keys[ACTION] && !pressingaction) {
 					pressingaction = true;
 					textbeingshown = null;
-					state = "overworld";
+					setstate("overworld");
 				}
 			}
 		}, dt);
