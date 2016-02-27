@@ -3,6 +3,11 @@ overworldmusic.play();
 overworldmusic.addEventListener("ended", function (e) {
 	overworldmusic.play();
 }, false);
+var battlemusic = new Audio("wild-battle.mp3");
+battlemusic.play();
+battlemusic.addEventListener("ended", function (e) {
+	battlemusic.play();
+}, false);
 var tilesize = 32;
 var keys = [
 	false,
@@ -163,11 +168,13 @@ window.onload = function () {
 	var setstate = function (name) {
 		if (name === "battle") {
 			overworldmusic.pause();
-			overworldmusic.currentTime = 0;
+			battlemusic.play();
 			pressingaction = keys[ACTION];
 			state = "battle";
 		}
 		if (name === "overworld") {
+			battlemusic.pause();
+			battlemusic.currentTime = 0;
 			overworldmusic.play();
 			state = "overworld";
 		}
