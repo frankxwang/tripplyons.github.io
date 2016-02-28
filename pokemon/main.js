@@ -4,7 +4,6 @@ overworldmusic.addEventListener("ended", function (e) {
 	overworldmusic.play();
 }, false);
 var battlemusic = new Audio("wild-battle.mp3");
-battlemusic.play();
 battlemusic.addEventListener("ended", function (e) {
 	battlemusic.play();
 }, false);
