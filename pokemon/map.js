@@ -17,6 +17,7 @@ Map.prototype.draw = function (ctx) {
 	for (var row = starttiley; row < starttiley + shownTilesHeight + 2 && row < this.data.length; row++) {
 		for (var col = starttilex; col < starttilex + shownTilesWidth + 2 && col < this.data[0].length; col++) {
 			ctx.drawImage(this.tileset, this.datamap[this.data[row][col]].tilesetx * tilesize, this.datamap[this.data[row][col]].tilesety * tilesize, tilesize, tilesize, Math.round((col - playerx) * tilesize + playerscreenx), Math.round((row - playery) * tilesize + playerscreeny), tilesize, tilesize);
+			
 		}
 	}
 }

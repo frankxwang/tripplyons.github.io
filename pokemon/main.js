@@ -16,6 +16,10 @@ var keys = [
 	false,
 	false
 ];
+var garySprite = new Image();
+garySprite.src = "gary.png";
+// [sprite, x, y, text]
+var trainers = [[garySprite, 11, 4, "I HATE YOU!"]];
 var oldkeys = keys;
 var UP = 0;
 var DOWN = 1;
@@ -182,17 +186,37 @@ window.onload = function () {
 
 	setstate("overworld");
 
+	var trainerat = function (x, y) {
+		console.log("LOOKING FOR TRAINER");
+		console.log(x, y);
+		for (var i = 0; i < trainers.length; i++) {
+			if (trainers[i][1] === Math.round(x) && trainers[i][2] === Math.round(y)) {
+				console.log("TRAINER FOUND");
+				return trainers[i];
+			}
+		}
+		return null;
+	}
+
 	var draw = function () {
 		if (state === "overworld") {
 			ctx.fillStyle = "#000000";
 			ctx.fillRect(0, 0, canvaswidth, canvasheight);
-			ctx.save();
 			map.draw(ctx);
 
-			ctx.translate(-playerx * tilesize, -playery * tilesize);
-			ctx.restore();
+			for (var i = 0; i < trainers.length; i++) {
+				if (trainers[i][2] < playery) {
+					ctx.drawImage(trainers[i][0], Math.round((trainers[i][1] - playerx) * tilesize + playerscreenx), Math.round((trainers[i][2] - playery) * tilesize + playerscreeny) - 12);
+				}
+			}
 
 			ctx.drawImage(playeranimimg[directiontable[playerdir] + playeranim[currentanimindex]], playerscreenx, playerscreeny - 6);
+
+			for (var i = 0; i < trainers.length; i++) {
+				if (trainers[i][2] >= playery) {
+					ctx.drawImage(trainers[i][0], Math.round((trainers[i][1] - playerx) * tilesize + playerscreenx), Math.round((trainers[i][2] - playery) * tilesize + playerscreeny) - 12);
+				}
+			}
 		} else if (state === "battle") {
 			ctx.fillStyle = "#000000";
 			ctx.fillRect(0, 0, canvaswidth, canvasheight);
@@ -214,6 +238,11 @@ window.onload = function () {
 			(playerdir === DOWN && playery === map.data.length - 1) ||
 			(playerdir === LEFT && playerx === 0) ||
 			(playerdir === RIGHT && playerx === map.data[0].length - 1))
+			return;
+		if ((playerdir === DOWN && trainerat(playerx, Math.floor(playery) + 1)) ||
+			(playerdir === UP && trainerat(playerx, Math.ceil(playery) - 1)) ||
+			(playerdir === LEFT && trainerat(Math.ceil(playerx) - 1, playery)) ||
+			(playerdir === RIGHT && trainerat(Math.floor(playerx) + 1, playery)))
 			return;
 		if (!((playerdir === DOWN && map.get(playerx, Math.floor(playery) + 1).passable) ||
 				(playerdir === UP && map.get(playerx, Math.ceil(playery) - 1).passable) ||
@@ -330,6 +359,24 @@ window.onload = function () {
 				if (playerdir === UP && keys[ACTION] && onblock() && map.get(playerx, playery - 1).name === "sign" && !pressingaction) {
 					pressingaction = true;
 					textbeingshown = map.get(playerx, playery - 1).text;
+				}
+				if (!pressingaction && keys[ACTION] && onblock()) {
+					if (playerdir === UP && trainerat(playerx, playery - 1)) {
+						pressingaction = true;
+						textbeingshown = trainerat(playerx, playery - 1)[3];
+					}
+					if (playerdir === DOWN && trainerat(playerx, playery + 1)) {
+						pressingaction = true;
+						textbeingshown = trainerat(playerx, playery + 1)[3];
+					}
+					if (playerdir === LEFT && trainerat(playerx - 1, playery)) {
+						pressingaction = true;
+						textbeingshown = trainerat(playerx - 1, playery)[3];
+					}
+					if (playerdir === RIGHT && trainerat(playerx + 1, playery)) {
+						pressingaction = true;
+						textbeingshown = trainerat(playerx + 1, playery)[3];
+					}
 				}
 			} else if (state === "battle") {
 				textbeingshown = "LET\'S BATTLE!";
