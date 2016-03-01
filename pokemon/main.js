@@ -7,14 +7,22 @@ var battlemusic = new Audio("wild-battle.mp3");
 battlemusic.addEventListener("ended", function (e) {
 	battlemusic.play();
 }, false);
+
+var winlevel = null;
+var currentbattle = null;
 var tilesize = 32;
+var money = 0;
 var keys = [
+	false,
+	false,
+	false,
 	false,
 	false,
 	false,
 	false,
 	false
 ];
+var pickingmove = false;
 var garySprite = new Image();
 garySprite.src = "gary.png";
 // [sprite, x, y, text]
@@ -25,12 +33,21 @@ var DOWN = 1;
 var LEFT = 2;
 var RIGHT = 3;
 var ACTION = 4;
+var ONE = 5;
+var TWO = 6;
+var THREE = 7;
 var canvaswidth;
 var canvasheight;
 var shownTilesWidth;
 var shownTilesHeight;
 var playerx = 7;
 var playery = 4;
+var playerpoke = new Pokemon("pikachu", 5);
+var grasspokes = [
+	new Pokemon("rattata", 3),
+	new Pokemon("rattata", 4),
+	new Pokemon("rattata", 5)
+];
 var playerscreenx;
 var playerscreeny;
 var playerdir = DOWN;
@@ -42,6 +59,9 @@ var dts = dt / 1000;
 var playermoving = false;
 var playeranim = ["1", "2", "1", "3"];
 var pressingaction = false;
+var pressingone = false;
+var pressingtwo = false;
+var pressingthree = false;
 var amountperanimframe = 4;
 var newarr = [];
 for (var i = 0; i < playeranim.length; i++) {
@@ -75,6 +95,38 @@ for (var i = 0; i < 4; i++) {
 	}
 }
 
+var setstate = function (name) {
+	if(state === "battle") {
+		for(var i=0; i<grasspokes.length; i++) {
+			grasspokes[i].hp = grasspokes[i].stats["hp"];
+		}
+	}
+	if (name === "battle") {
+		overworldmusic.pause();
+		battlemusic.play();
+		pressingaction = keys[ACTION];
+		textbeingshown = "A battle has started!";
+		pickingmove = false;
+		state = "battle";
+	}
+	if (name === "overworld") {
+		battlemusic.pause();
+		battlemusic.currentTime = 0;
+		textbeingshown = null;
+		if(winlevel) {
+			var moneywon = Math.round(winlevel*5+(Math.random()*5+8));
+			textbeingshown = "Dropped $"+moneywon.toString();
+			textbeingshown += ".";
+			
+			money += moneywon;
+			
+			winlevel = null;
+		}
+		overworldmusic.play();
+		state = "overworld";
+	}
+}
+
 document.addEventListener("keydown", function (e) {
 	e = e || window.event;
 	if (e.keyCode == 38) {
@@ -91,6 +143,15 @@ document.addEventListener("keydown", function (e) {
 	}
 	if (e.keyCode == 32) {
 		keys[ACTION] = true;
+	}
+	if (e.keyCode == 49) {
+		keys[ONE] = true;
+	}
+	if (e.keyCode == 50) {
+		keys[TWO] = true;
+	}
+	if (e.keyCode == 51) {
+		keys[THREE] = true;
 	}
 });
 document.addEventListener("keyup", function (e) {
@@ -110,6 +171,18 @@ document.addEventListener("keyup", function (e) {
 	if (e.keyCode == 32) {
 		keys[ACTION] = false;
 		pressingaction = false;
+	}
+	if (e.keyCode == 49) {
+		keys[ONE] = false;
+		pressingone = false;
+	}
+	if (e.keyCode == 50) {
+		keys[TWO] = false;
+		pressingtwo = false;
+	}
+	if (e.keyCode == 51) {
+		keys[THREE] = false;
+		pressingthree = false;
 	}
 });
 
@@ -168,29 +241,11 @@ window.onload = function () {
 
 	var map = new Map(tileset, data, datamap);
 
-	var setstate = function (name) {
-		if (name === "battle") {
-			overworldmusic.pause();
-			battlemusic.play();
-			pressingaction = keys[ACTION];
-			state = "battle";
-		}
-		if (name === "overworld") {
-			battlemusic.pause();
-			battlemusic.currentTime = 0;
-			overworldmusic.play();
-			state = "overworld";
-		}
-	}
-
 	setstate("overworld");
 
 	var trainerat = function (x, y) {
-		console.log("LOOKING FOR TRAINER");
-		console.log(x, y);
 		for (var i = 0; i < trainers.length; i++) {
 			if (trainers[i][1] === Math.round(x) && trainers[i][2] === Math.round(y)) {
-				console.log("TRAINER FOUND");
 				return trainers[i];
 			}
 		}
@@ -217,9 +272,7 @@ window.onload = function () {
 				}
 			}
 		} else if (state === "battle") {
-			ctx.fillStyle = "#000000";
-			ctx.fillRect(0, 0, canvaswidth, canvasheight);
-			ctx.drawImage(battlebg, 0, 0);
+			currentbattle.draw(ctx);
 		}
 
 		if (textbeingshown) {
@@ -284,6 +337,7 @@ window.onload = function () {
 	var directionplayer = function (dir) {
 		if (onblock()) {
 			if (map.get(playerx, playery).name === "tallgrass" && Math.floor(Math.random() * 7) === 0) {
+				currentbattle = new Battle(playerpoke, grasspokes[Math.floor(Math.random(grasspokes.length))]);
 				setstate("battle");
 			} else {
 				playerdir = dir;
@@ -378,12 +432,7 @@ window.onload = function () {
 					}
 				}
 			} else if (state === "battle") {
-				textbeingshown = "LET\'S BATTLE!";
-				if (keys[ACTION] && !pressingaction) {
-					pressingaction = true;
-					textbeingshown = null;
-					setstate("overworld");
-				}
+				currentbattle.update();
 			}
 		}, dt);
 	}
