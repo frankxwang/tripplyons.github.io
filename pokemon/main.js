@@ -96,9 +96,23 @@ for (var i = 0; i < 4; i++) {
 }
 
 var setstate = function (name) {
-	if(state === "battle") {
-		for(var i=0; i<grasspokes.length; i++) {
+	if (state === "battle") {
+		for (var i = 0; i < grasspokes.length; i++) {
 			grasspokes[i].hp = grasspokes[i].stats["hp"];
+		}
+		if (winlevel) {
+			console.log("WON");
+			var moneywon = Math.round(winlevel * 5 + (Math.random() * 5 + 8));
+			textbeingshown = "Dropped $" + moneywon.toString();
+			textbeingshown += ".";
+
+			money += moneywon;
+
+			winlevel = null;
+		} else {
+			console.log("LOST");
+			playerpoke.hp = playerpoke.stats["hp"];
+			textbeingshown = "You lost: healing your Pokemon.";
 		}
 	}
 	if (name === "battle") {
@@ -112,16 +126,6 @@ var setstate = function (name) {
 	if (name === "overworld") {
 		battlemusic.pause();
 		battlemusic.currentTime = 0;
-		textbeingshown = null;
-		if(winlevel) {
-			var moneywon = Math.round(winlevel*5+(Math.random()*5+8));
-			textbeingshown = "Dropped $"+moneywon.toString();
-			textbeingshown += ".";
-			
-			money += moneywon;
-			
-			winlevel = null;
-		}
 		overworldmusic.play();
 		state = "overworld";
 	}
@@ -347,6 +351,9 @@ window.onload = function () {
 
 	tileset.onload = function () {
 		setInterval(function () {
+			if (textbeingshown) {
+				console.log(textbeingshown);
+			}
 			draw();
 
 			if (state === "overworld") {
