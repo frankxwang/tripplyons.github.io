@@ -26,7 +26,7 @@ var pickingmove = false;
 var garySprite = new Image();
 garySprite.src = "gary.png";
 // [sprite, x, y, text]
-var trainers = [[garySprite, 11, 4, "I HATE YOU!"]];
+var trainers = [[garySprite, 11, 4, "Hello!"]];
 var oldkeys = keys;
 var UP = 0;
 var DOWN = 1;
@@ -42,6 +42,8 @@ var shownTilesWidth;
 var shownTilesHeight;
 var playerx = 7;
 var playery = 4;
+var lastcheckpointx = 7;
+var lastcheckpointy = 4;
 var playerpoke = new Pokemon("pikachu", 5);
 var grasspokes = [
 	new Pokemon("rattata", 3),
@@ -122,9 +124,12 @@ var setstate = function (name) {
 
 			winlevel = null;
 		} else {
-			console.log("LOST");
+			money = Math.round(money/2);
+			playerx = lastcheckpointx;
+			playery = lastcheckpointy;
+			playerdir = DOWN;
 			playerpoke.hp = playerpoke.stats["hp"];
-			textbeingshown = "You lost: healing your Pokemon.";
+			textbeingshown = "You lost. Returned to last checkpoint.";
 		}
 	}
 	if (name === "battle") {

@@ -22,6 +22,10 @@ Battle.prototype.draw = function (ctx) {
 	ctx.font = "12px monospace";
 	ctx.fillText(pokedata["pokemon"][this.playerpoke.name]["name"], 268, 148);
 	ctx.fillText(pokedata["pokemon"][this.opposing.name]["name"], 20, 44);
+	ctx.fillStyle = "#5080F0";
+	if (this.playerpoke.level < 100) {
+		ctx.fillRect(280, 192, this.playerpoke.exp / ((this.playerpoke.level + 1) * (this.playerpoke.level + 1) * (this.playerpoke.level + 1)) * 168, 8)
+	}
 };
 
 Battle.prototype.update = function () {
