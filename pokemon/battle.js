@@ -18,6 +18,10 @@ Battle.prototype.draw = function (ctx) {
 	ctx.fillStyle = "#20D020";
 	ctx.fillRect(280, 152, this.playerpoke.hp / this.playerpoke.stats["hp"] * 168, 32);
 	ctx.fillRect(32, 48, this.opposing.hp / this.opposing.stats["hp"] * 168, 32);
+	ctx.fillStyle = "#F0F0F0";
+	ctx.font = "12px monospace";
+	ctx.fillText(pokedata["pokemon"][this.playerpoke.name]["name"], 268, 148);
+	ctx.fillText(pokedata["pokemon"][this.opposing.name]["name"], 20, 44);
 };
 
 Battle.prototype.update = function () {
@@ -55,7 +59,7 @@ Battle.prototype.update = function () {
 
 Battle.prototype.doTurn = function (moveNo) {
 	if (this.playerpoke.stats["spe"] >= this.opposing.stats["spe"]) {
-		this.opposing.takeDamage(playerpoke, playerpoke.moves[moveNo]);
+		this.opposing.takeDamage(this.playerpoke, this.playerpoke.moves[moveNo]);
 		if (this.opposing.hp !== 0) {
 			this.playerpoke.takeDamage(this.opposing, this.opposing.moves[Math.floor(Math.random() * this.opposing.moves.length)]);
 			if (this.playerpoke.hp === 0) {
@@ -68,7 +72,7 @@ Battle.prototype.doTurn = function (moveNo) {
 	} else {
 		this.playerpoke.takeDamage(this.opposing, this.opposing.moves[Math.floor(Math.random() * this.opposing.moves.length)]);
 		if (this.playerpoke.hp !== 0) {
-			this.opposing.takeDamage(playerpoke, playerpoke.moves[moveNo]);
+			this.opposing.takeDamage(this.playerpoke, this.playerpoke.moves[moveNo]);
 			if (this.opposing.hp === 0) {
 				winlevel = this.opposing.level;
 				setstate("overworld");

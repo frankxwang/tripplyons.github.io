@@ -102,9 +102,21 @@ var setstate = function (name) {
 		}
 		if (winlevel) {
 			console.log("WON");
+			var oldlevel = playerpoke.level;
+
 			var moneywon = Math.round(winlevel * 5 + (Math.random() * 5 + 8));
-			textbeingshown = "Dropped $" + moneywon.toString();
-			textbeingshown += ".";
+			textbeingshown = "Gained $" + moneywon.toString();
+			var expearned = Math.round((115 * winlevel) / 7);
+			playerpoke.getExp(expearned);
+
+			if (playerpoke.level !== oldlevel) {
+				textbeingshown += " and leveled up " + (playerpoke.level - oldlevel).toString() + " level";
+				if(playerpoke.level - oldlevel !== 1) {
+					textbeingshown += "s";
+				}
+			}
+
+			textbeingshown += "!";
 
 			money += moneywon;
 
@@ -275,6 +287,14 @@ window.onload = function () {
 					ctx.drawImage(trainers[i][0], Math.round((trainers[i][1] - playerx) * tilesize + playerscreenx), Math.round((trainers[i][2] - playery) * tilesize + playerscreeny) - 12);
 				}
 			}
+			
+			ctx.fillStyle = "#202020";
+			ctx.font = "32px monospace";
+			ctx.fillText("$"+money.toString()+"", 16, 40);
+			ctx.fillStyle = "#505050";
+			ctx.fillRect(344, 8, 128, 48);
+			ctx.fillStyle = "#20D020";
+			ctx.fillRect(352, 16, this.playerpoke.hp / this.playerpoke.stats["hp"] * 112, 32);
 		} else if (state === "battle") {
 			currentbattle.draw(ctx);
 		}
@@ -335,13 +355,14 @@ window.onload = function () {
 	}
 
 	var onblock = function () {
-		return playerx.toPrecision(5) % 1.0 === 0 && playery.toPrecision(5) % 1.0 === 0;
+		return playerx.toPrecision(6) % 1.0 === 0 && playery.toPrecision(6) % 1.0 === 0;
 	}
 
 	var directionplayer = function (dir) {
 		if (onblock()) {
 			if (map.get(playerx, playery).name === "tallgrass" && Math.floor(Math.random() * 7) === 0) {
-				currentbattle = new Battle(playerpoke, grasspokes[Math.floor(Math.random(grasspokes.length))]);
+				var encounter = grasspokes[Math.floor(Math.random(grasspokes.length))];
+				currentbattle = new Battle(playerpoke, encounter);
 				setstate("battle");
 			} else {
 				playerdir = dir;
