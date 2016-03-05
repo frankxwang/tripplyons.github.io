@@ -1,3 +1,6 @@
+var usingsave = (typeof (Storage) !== "undefined");
+
+
 var overworldmusic = new Audio("route-1.mp3");
 overworldmusic.play();
 overworldmusic.addEventListener("ended", function (e) {
@@ -11,7 +14,36 @@ battlemusic.addEventListener("ended", function (e) {
 var winlevel = null;
 var currentbattle = null;
 var tilesize = 32;
-var money = 0;
+var money;
+var playerpoke;
+var playerx;
+var playery;
+var checkpointx;
+var checkpointy;
+if (usingsave) {
+	console.log("USING SAVE");
+	money = parseInt(localStorage.getItem("money"));
+
+	playerpoke = new Pokemon(localStorage.getItem("playerpokename"), parseInt(localStorage.getItem("playerpokelevel")), parseInt(localStorage.getItem("playerpokeexp")));
+	console.log(playerpoke.exp);
+
+	playerx = parseInt(localStorage.getItem("playerx"));
+	playery = parseInt(localStorage.getItem("playery"));
+
+	checkpointx = parseInt(localStorage.getItem("checkpointx"));
+	checkpointy = parseInt(localStorage.getItem("checkpointy"));
+} else {
+	money = 0;
+
+	playerpoke = new Pokemon("pikachu", 5);
+
+	playerx = 7;
+	playery = 4;
+
+	checkpointx = 7;
+	checkpointy = 4;
+}
+console.log(playerpoke);
 var keys = [
 	false,
 	false,
@@ -22,6 +54,8 @@ var keys = [
 	false,
 	false
 ];
+var savecounter = 0;
+var savecountdown = 600;
 var pickingmove = false;
 var garySprite = new Image();
 garySprite.src = "gary.png";
@@ -40,16 +74,14 @@ var canvaswidth;
 var canvasheight;
 var shownTilesWidth;
 var shownTilesHeight;
-var playerx = 7;
-var playery = 4;
-var lastcheckpointx = 7;
-var lastcheckpointy = 4;
-var playerpoke = new Pokemon("pikachu", 5);
+//console.log(playerx, playery);
+var waitingforonblocksave = false;
 var grasspokes = [
 	new Pokemon("rattata", 3),
 	new Pokemon("rattata", 4),
 	new Pokemon("rattata", 5)
 ];
+//console.log(playerpoke);
 var playerscreenx;
 var playerscreeny;
 var playerdir = DOWN;
@@ -113,7 +145,7 @@ var setstate = function (name) {
 
 			if (playerpoke.level !== oldlevel) {
 				textbeingshown += " and leveled up " + (playerpoke.level - oldlevel).toString() + " level";
-				if(playerpoke.level - oldlevel !== 1) {
+				if (playerpoke.level - oldlevel !== 1) {
 					textbeingshown += "s";
 				}
 			}
@@ -124,12 +156,12 @@ var setstate = function (name) {
 
 			winlevel = null;
 		} else {
-			money = Math.round(money/2);
-			playerx = lastcheckpointx;
-			playery = lastcheckpointy;
+			money = Math.round(money / 2);
+			playerx = checkpointx;
+			playery = checkpointy;
 			playerdir = DOWN;
 			playerpoke.hp = playerpoke.stats["hp"];
-			textbeingshown = "You lost. Returned to last checkpoint.";
+			textbeingshown = "You lost. Returned to checkpoint.";
 		}
 	}
 	if (name === "battle") {
@@ -210,6 +242,21 @@ document.addEventListener("keyup", function (e) {
 var playermovecamerainterval = 0.0625;
 
 window.onload = function () {
+	var save = function () {
+		console.log("SAVE");
+		if (typeof (Storage) !== "undefined") {
+			localStorage.setItem("playerpokename", playerpoke.name);
+			localStorage.setItem("playerpokelevel", playerpoke.level.toString());
+			localStorage.setItem("playerpokeexp", playerpoke.exp.toString());
+			localStorage.setItem("playerx", playerx.toString());
+			localStorage.setItem("playery", playery.toString());
+			localStorage.setItem("money", money.toString());
+			localStorage.setItem("checkpointx", checkpointx.toString());
+			localStorage.setItem("checkpointy", checkpointy.toString());
+		}
+
+		savecounter = savecountdown;
+	}
 	var canvas = document.getElementById("canvas");
 	var ctx = canvas.getContext("2d");
 	canvaswidth = parseInt(getStyle(canvas, "width"));
@@ -243,7 +290,7 @@ window.onload = function () {
 			    ")()()()/\\/\\/\\/\\/\\/\\/\\()()()(",
 				"}{}{}{}{}{}{}{}{}{}{}{}{}{}{",
 				")()()()()()()()()()()()()()(",
-				"}{}{}{}{}{}{}{}{}{}{}{}{}{}{"]
+				"}{}{}{}{}{}{}{}{}{}{}{}{}{}{"];
 
 	var datamap = {
 		".": new TileType("grass", 1, 0, true),
@@ -292,10 +339,10 @@ window.onload = function () {
 					ctx.drawImage(trainers[i][0], Math.round((trainers[i][1] - playerx) * tilesize + playerscreenx), Math.round((trainers[i][2] - playery) * tilesize + playerscreeny) - 12);
 				}
 			}
-			
+
 			ctx.fillStyle = "#202020";
 			ctx.font = "32px monospace";
-			ctx.fillText("$"+money.toString()+"", 16, 40);
+			ctx.fillText("$" + money.toString() + "", 16, 40);
 			ctx.fillStyle = "#505050";
 			ctx.fillRect(344, 8, 128, 48);
 			ctx.fillStyle = "#20D020";
@@ -367,7 +414,7 @@ window.onload = function () {
 		if (onblock()) {
 			if (map.get(playerx, playery).name === "tallgrass" && Math.floor(Math.random() * 7) === 0) {
 				var encounter = grasspokes[Math.floor(Math.random(grasspokes.length))];
-				currentbattle = new Battle(playerpoke, encounter);
+				currentbattle = new Battle(playerpoke, encounter, true);
 				setstate("battle");
 			} else {
 				playerdir = dir;
@@ -467,6 +514,21 @@ window.onload = function () {
 			} else if (state === "battle") {
 				currentbattle.update();
 			}
+
+			if (waitingforonblocksave && onblock()) {
+				waitingforonblocksave = false;
+				save();
+			}
+
+			if (savecounter <= 0) {
+				if (onblock()) {
+					save();
+				} else {
+					waitingforonblocksave = true;
+				}
+			}
+
+			savecounter--;
 		}, dt);
 	}
 

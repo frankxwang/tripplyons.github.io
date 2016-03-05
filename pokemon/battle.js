@@ -1,6 +1,7 @@
-var Battle = function (playerpoke, opposing) {
+var Battle = function (playerpoke, opposing, catchable) {
 	this.playerpoke = playerpoke;
 	this.opposing = opposing;
+	this.catchable = catchable;
 
 	//	console.log()
 };
@@ -20,11 +21,11 @@ Battle.prototype.draw = function (ctx) {
 	ctx.fillRect(32, 48, this.opposing.hp / this.opposing.stats["hp"] * 168, 32);
 	ctx.fillStyle = "#F0F0F0";
 	ctx.font = "12px monospace";
-	ctx.fillText(pokedata["pokemon"][this.playerpoke.name]["name"], 268, 148);
-	ctx.fillText(pokedata["pokemon"][this.opposing.name]["name"], 20, 44);
+	ctx.fillText(pokedata["pokemon"][this.playerpoke.name]["name"] + "  LV. " + this.playerpoke.level, 268, 148);
+	ctx.fillText(pokedata["pokemon"][this.opposing.name]["name"] + "  LV. " + this.opposing.level, 20, 44);
 	ctx.fillStyle = "#5080F0";
 	if (this.playerpoke.level < 100) {
-		ctx.fillRect(280, 192, this.playerpoke.exp / ((this.playerpoke.level + 1) * (this.playerpoke.level + 1) * (this.playerpoke.level + 1)) * 168, 8)
+		ctx.fillRect(280, 188, this.playerpoke.exp / ((this.playerpoke.level + 1) * (this.playerpoke.level + 1) * (this.playerpoke.level + 1)) * 168, 8);
 	}
 };
 
