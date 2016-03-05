@@ -30,6 +30,9 @@ var playery;
 var checkpointx;
 var checkpointy;
 var playerdir;
+var garySprite = new Image();
+garySprite.src = "gary.png";
+var trainers = [[garySprite, 11, 4, "Hello!", new Pokemon("eevee", 5), false]];
 if (usingsave) {
 	console.log("USING SAVE");
 	money = parseInt(localStorage.getItem("money"));
@@ -44,10 +47,18 @@ if (usingsave) {
 
 	playerdir = parseInt(localStorage.getItem("playerdir"));
 	console.log(playerdir);
-	if (typeof (playerdir) === "undefined" || isNaN(playerdir)) {
+	if (typeof (playerdir) === "undefined" || playerdir == null ||isNaN(playerdir)) {
 		console.log("FIX PLAYERDIR");
 		playerdir = DOWN;
 		console.log(playerdir);
+	}
+	
+	var trainersbeaten = JSON.parse(localStorage.getItem("trainersbeaten"));
+	if(typeof (trainersbeaten) !== "undefined" && trainersbeaten != null) {
+		console.log("SET TRAINERS BEATEN");
+		for(var i=0; i<trainersbeaten.length; i++) {
+			trainers[i][5] = trainersbeaten[i];
+		}
 	}
 } else {
 	money = 0;
@@ -76,10 +87,9 @@ var keys = [
 var savecounter = 0;
 var savecountdown = 600;
 var pickingmove = false;
-var garySprite = new Image();
-garySprite.src = "gary.png";
-// [sprite, x, y, text]
-var trainers = [[garySprite, 11, 4, "Hello!"]];
+// [sprite, x, y, text, poke, beaten]
+var battlingaftertrainertext = false;
+var currenttrainerbattleindex = null;
 var oldkeys = keys;
 var canvaswidth;
 var canvasheight;
@@ -163,6 +173,10 @@ var setstate = function (name) {
 			textbeingshown += "!";
 
 			money += moneywon;
+			if (typeof (currenttrainerbattleindex) !== "undefined") {
+				console.log("TRAINER WIN");
+				trainers[currenttrainerbattleindex][5] = true;
+			}
 
 			winlevel = null;
 		} else {
@@ -172,6 +186,9 @@ var setstate = function (name) {
 			playerdir = DOWN;
 			playerpoke.hp = playerpoke.stats["hp"];
 			textbeingshown = "You lost. Returned to checkpoint.";
+		}
+		if (typeof (currenttrainerbattleindex) !== "undefined") {
+			currenttrainerbattleindex = null;
 		}
 	}
 	if (name === "battle") {
@@ -192,58 +209,58 @@ var setstate = function (name) {
 
 document.addEventListener("keydown", function (e) {
 	e = e || window.event;
-	if (e.keyCode == 38) {
+	if (e.keyCode === 38) {
 		keys[UP] = true;
 	}
-	if (e.keyCode == 40) {
+	if (e.keyCode === 40) {
 		keys[DOWN] = true;
 	}
-	if (e.keyCode == 37) {
+	if (e.keyCode === 37) {
 		keys[LEFT] = true;
 	}
-	if (e.keyCode == 39) {
+	if (e.keyCode === 39) {
 		keys[RIGHT] = true;
 	}
-	if (e.keyCode == 32) {
+	if (e.keyCode === 32) {
 		keys[ACTION] = true;
 	}
-	if (e.keyCode == 49) {
+	if (e.keyCode === 49) {
 		keys[ONE] = true;
 	}
-	if (e.keyCode == 50) {
+	if (e.keyCode === 50) {
 		keys[TWO] = true;
 	}
-	if (e.keyCode == 51) {
+	if (e.keyCode === 51) {
 		keys[THREE] = true;
 	}
 });
 document.addEventListener("keyup", function (e) {
 	e = e || window.event;
-	if (e.keyCode == 38) {
+	if (e.keyCode === 38) {
 		keys[UP] = false;
 	}
-	if (e.keyCode == 40) {
+	if (e.keyCode === 40) {
 		keys[DOWN] = false;
 	}
-	if (e.keyCode == 37) {
+	if (e.keyCode === 37) {
 		keys[LEFT] = false;
 	}
-	if (e.keyCode == 39) {
+	if (e.keyCode === 39) {
 		keys[RIGHT] = false;
 	}
-	if (e.keyCode == 32) {
+	if (e.keyCode === 32) {
 		keys[ACTION] = false;
 		pressingaction = false;
 	}
-	if (e.keyCode == 49) {
+	if (e.keyCode === 49) {
 		keys[ONE] = false;
 		pressingone = false;
 	}
-	if (e.keyCode == 50) {
+	if (e.keyCode === 50) {
 		keys[TWO] = false;
 		pressingtwo = false;
 	}
-	if (e.keyCode == 51) {
+	if (e.keyCode === 51) {
 		keys[THREE] = false;
 		pressingthree = false;
 	}
@@ -264,6 +281,9 @@ window.onload = function () {
 			localStorage.setItem("checkpointx", checkpointx.toString());
 			localStorage.setItem("checkpointy", checkpointy.toString());
 			localStorage.setItem("playerdir", playerdir.toString());
+			localStorage.setItem("trainersbeaten", JSON.stringify(trainers.map(function (arg) {
+				return arg[5];
+			})));
 		}
 
 		savecounter = savecountdown;
@@ -325,7 +345,10 @@ window.onload = function () {
 	var trainerat = function (x, y) {
 		for (var i = 0; i < trainers.length; i++) {
 			if (trainers[i][1] === Math.round(x) && trainers[i][2] === Math.round(y)) {
-				return trainers[i];
+				return {
+					index: i,
+					trainer: trainers[i]
+				};
 			}
 		}
 		return null;
@@ -388,16 +411,16 @@ window.onload = function () {
 				(playerdir === RIGHT && map.get(Math.floor(playerx) + 1, playery).passable)))
 			return;
 		if (playermoving) {
-			if (playerdir == UP) {
+			if (playerdir === UP) {
 				playery -= playermovecamerainterval;
 			}
-			if (playerdir == DOWN) {
+			if (playerdir === DOWN) {
 				playery += playermovecamerainterval;
 			}
-			if (playerdir == LEFT) {
+			if (playerdir === LEFT) {
 				playerx -= playermovecamerainterval;
 			}
-			if (playerdir == RIGHT) {
+			if (playerdir === RIGHT) {
 				playerx += playermovecamerainterval;
 			}
 
@@ -496,6 +519,10 @@ window.onload = function () {
 					if (keys[ACTION] && !pressingaction) {
 						pressingaction = true;
 						textbeingshown = null;
+						if (battlingaftertrainertext) {
+							battlingaftertrainertext = false;
+							setstate("battle");
+						}
 					}
 				}
 
@@ -506,19 +533,48 @@ window.onload = function () {
 				if (!pressingaction && keys[ACTION] && onblock()) {
 					if (playerdir === UP && trainerat(playerx, playery - 1)) {
 						pressingaction = true;
-						textbeingshown = trainerat(playerx, playery - 1)[3];
+						var trainer = trainerat(playerx, playery - 1);
+						textbeingshown = trainer.trainer[3];
+						if (!trainer.trainer[5]) {
+							var opposing = trainer.trainer[4];
+							currentbattle = new Battle(playerpoke, opposing, false);
+							battlingaftertrainertext = true;
+							currenttrainerbattleindex = trainer.index;
+						}
+
 					}
 					if (playerdir === DOWN && trainerat(playerx, playery + 1)) {
 						pressingaction = true;
-						textbeingshown = trainerat(playerx, playery + 1)[3];
+						var trainer = trainerat(playerx, playery + 1);
+						textbeingshown = trainer.trainer[3];
+						if (!trainer.trainer[5]) {
+							var opposing = trainer.trainer[4];
+							currentbattle = new Battle(playerpoke, opposing, false);
+							battlingaftertrainertext = true;
+							currenttrainerbattleindex = trainer.index;
+						}
 					}
 					if (playerdir === LEFT && trainerat(playerx - 1, playery)) {
 						pressingaction = true;
-						textbeingshown = trainerat(playerx - 1, playery)[3];
+						var trainer = trainerat(playerx - 1, playery);
+						textbeingshown = trainer.trainer[3];
+						if (!trainer.trainer[5]) {
+							var opposing = trainer.trainer[4];
+							currentbattle = new Battle(playerpoke, opposing, false);
+							battlingaftertrainertext = true;
+							currenttrainerbattleindex = trainer.index;
+						}
 					}
 					if (playerdir === RIGHT && trainerat(playerx + 1, playery)) {
 						pressingaction = true;
-						textbeingshown = trainerat(playerx + 1, playery)[3];
+						var trainer = trainerat(playerx + 1, playery);
+						textbeingshown = trainer.trainer[3];
+						if (!trainer.trainer[5]) {
+							var opposing = trainer.trainer[4];
+							currentbattle = new Battle(playerpoke, opposing, false);
+							battlingaftertrainertext = true;
+							currenttrainerbattleindex = trainer.index;
+						}
 					}
 				}
 			} else if (state === "battle") {
