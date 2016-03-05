@@ -35,7 +35,8 @@ if (usingsave) {
 	
 	playerdir = parseInt(localStorage.getItem("playerdir"));
 	console.log(playerdir);
-	if(typeof(playerdir) === "undefined" || isNaN(playerdir)) {
+	if(typeof (playerdir) === "undefined" || isNaN(playerdir)) {
+		console.log("FIX PLAYERDIR");
 		playerdir = DOWN;
 	}
 } else {
