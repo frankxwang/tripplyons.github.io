@@ -9,7 +9,13 @@ var pokedata = {
 			"name": "ThunderShock",
 			"damage": 50,
 			"type": "electric"
+		},
+         "headbutt": {
+			"name": "Headbutt",
+			"damage": 5,
+			"type": "normal"
 		}
+        
 	},
 	"pokemon": {
 		"pikachu": {
@@ -17,7 +23,8 @@ var pokedata = {
 			"type": "electric",
 			"moves": [
 				["tackle"],
-				["tackle", "thundershock"]
+				["tackle", "thundershock"],
+                ["tackle", "thundershock", "kick"]
 			],
 			"hp": 35,
 			"atk": 55,
@@ -39,6 +46,32 @@ var pokedata = {
 			"spd": 35,
 			"spe": 72
 		},
+		"diglet": {
+			"name": "Diglet",
+			"type": "normal",
+			"moves": [
+				["tackle"]
+			],
+			"hp": 30,
+			"atk": 56,
+			"def": 35,
+			"spa": 25,
+			"spd": 35,
+			"spe": 72
+		},
+		"pidgey": {
+			"name": "Pidgey",
+			"type": "flying",
+			"moves": [
+				["tackle"]
+			],
+			"hp": 40,
+			"atk": 45,
+			"def": 40,
+			"spa": 35,
+			"spd": 35,
+			"spe": 56
+		},
 		"eevee": {
 			"name": "Eevee",
 			"type": "normal",
@@ -51,6 +84,8 @@ var pokedata = {
 			"spa": 45,
 			"spd": 65,
 			"spe": 55
+
 		}
-	}
+	},
+    
 };
