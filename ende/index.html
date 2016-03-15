@@ -15,19 +15,21 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 	</head>
 	<body>
-		<script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
-		<button onclick="enter()">Enter Channel</button>
-		<h2></h2>
 		<div class="container">
+			<button type="button" class="btn btn-primary" onclick="enter()>Enter Channel</button>
+			<h2></h2>
 			<h1>Your Messages:</h1>
 		</div>
 		
+		<script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
 		<script>
 			var dataRef = new Firebase('https://ende-chat.firebaseio.com/');
-			var room = "home";
+			var channel = "home";
+			var channelRef = new Firebase('https://ende-chat.firebaseio.com/'+channel);
 			function enter() {
-				room = prompt("ROOM");
-				$("h2").html(room);
+				channel = prompt("CHANNEL");
+				$("h2").html(channel);
+				channelRef = new Firebase('https://ende-chat.firebaseio.com/'+channel);
 			}
 		</script>
 	</body>
