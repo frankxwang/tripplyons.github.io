@@ -44,7 +44,7 @@
 			channelRef.push("A user joined");
 		}
 
-		channelRef.on('child_added', function (snapshot) {
+		channelRef.limitToLast(25).on('child_added', function (snapshot) {
 			var data = snapshot.val();
 			console.log(data);
 			$("#messages").html("<p>" + data + "</p>" + $("#messages").html());
