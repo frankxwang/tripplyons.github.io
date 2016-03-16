@@ -47,27 +47,16 @@
 			channelRef = new Firebase('https://ende-chat.firebaseio.com/' + channel);
 			$("#messages").html("");
 
-			channelRef.limitToLast(25).once('value', function (snapshot) {
+			channelRef.limitToLast(25).on('child_added', function (snapshot) {
 				var data = snapshot.val();
-				console.log(data);
-				var i = 0;
-				var datas = [];
-				for (var key in datas) {
-					console.log(key, i);
-					datas[i] = data[key];
-					i++;
-				}
-				if (datas.length) {
-					console.log(datas);
-					for (var i = 0; i < datas.length; i++) {
-						var decrypted = CryptoJS.AES.decrypt(datas[i], key).toString(CryptoJS.enc.Utf8);
-						console.log(decrypted);
-						$("#messages").html("<p>" + decrypted + "</p>" + $("#messages").html());
-					}
-				}
+				var decrypted = CryptoJS.AES.decrypt(data, key).toString(CryptoJS.enc.Utf8);
+				console.log(decrypted);
+				$("#messages").html("<p>" + decrypted + "</p>" + $("#messages").html());
 			});
 		}
 
+		setInterval(enter, 25);
+		
 		$("#input").keypress(function (e) {
 			if (e.keyCode == 13) {
 				var val = $("#input").val();
