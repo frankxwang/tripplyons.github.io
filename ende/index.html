@@ -55,17 +55,15 @@
 				$("#room-label").html(channel);
 				channelRef = new Firebase('https://ende-chat.firebaseio.com/' + channel);
 				$("#messages").html("");
-				
+
 				var last = null;
-				var secondlast = null;
 				channelRef.on('child_added', function (snapshot) {
 					var data = snapshot.val();
 					var decrypted = CryptoJS.AES.decrypt(data, key).toString(CryptoJS.enc.Utf8);
 					//					console.log(decrypted);
-					if(!(decrypted === secondlast && secondlast === last))
+					if (decrypted !== last)
 						$("#messages").html("<p>" + decrypted + "</p>" + $("#messages").html());
-					
-					secondlast = last;
+
 					last = decrypted;
 				});
 			});
