@@ -56,7 +56,7 @@
 				channelRef = new Firebase('https://ende-chat.firebaseio.com/' + channel);
 				$("#messages").html("");
 
-				channelRef.limitToLast(25).on('child_added', function (snapshot) {
+				channelRef.on('child_added', function (snapshot) {
 					var data = snapshot.val();
 					var decrypted = CryptoJS.AES.decrypt(data, key).toString(CryptoJS.enc.Utf8);
 					//					console.log(decrypted);
