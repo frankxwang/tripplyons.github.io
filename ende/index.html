@@ -40,7 +40,6 @@
 		var channel = "home";
 		var channelRef;
 		var key = "home";
-		var oldtime = 500;
 		enter();
 
 		function time(func) {
@@ -51,21 +50,16 @@
 		}
 
 		function enter() {
-			setTimeout(function () {
-				oldtime = time(function () {
-					console.log(oldtime);
-					$("#room-label").html(channel);
-					channelRef = new Firebase('https://ende-chat.firebaseio.com/' + channel);
-					$("#messages").html("");
+			$("#room-label").html(channel);
+			channelRef = new Firebase('https://ende-chat.firebaseio.com/' + channel);
+			$("#messages").html("");
 
-					channelRef.limitToLast(25).on('child_added', function (snapshot) {
-						var data = snapshot.val();
-						var decrypted = CryptoJS.AES.decrypt(data, key).toString(CryptoJS.enc.Utf8);
-						console.log(decrypted);
-						$("#messages").html("<p>" + decrypted + "</p>" + $("#messages").html());
-					});
-				});
-			}, oldtime * 3);
+			channelRef.limitToLast(25).on('child_added', function (snapshot) {
+				var data = snapshot.val();
+				var decrypted = CryptoJS.AES.decrypt(data, key).toString(CryptoJS.enc.Utf8);
+				console.log(decrypted);
+				$("#messages").html("<p>" + decrypted + "</p>" + $("#messages").html());
+			});
 		}
 
 		$("#input").keypress(function (e) {
