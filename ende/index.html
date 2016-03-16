@@ -66,6 +66,7 @@
 			if (e.keyCode == 13) {
 				var val = $("#input").val();
 				var encrypted = CryptoJS.AES.encrypt(val, key).toString();
+				console.log("PUSHING TO CHANNEL");
 				channelRef.push(encrypted);
 				enter();
 				$("#input").val('');
