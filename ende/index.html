@@ -17,6 +17,7 @@
 <body>
 	<div class="container" id="the-container">
 		<br />
+		<button type="button" class="btn btn-primary" onclick="key = prompt('KEY')">Set Key</button>
 		<button type="button" class="btn btn-primary" onclick="channel = prompt('CHANNEL'); enter()" id="enter">Enter Channel</button>
 		<h2 id="room-label"></h2>
 		<input id="input" type="text" class="form-control">
@@ -26,7 +27,7 @@
 		</div>
 	</div>
 
-
+	<script src="triplesec.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
 	<!-- Latest compiled and minified JavaScript -->
@@ -36,6 +37,7 @@
 		var dataRef = new Firebase('https://ende-chat.firebaseio.com/');
 		var channel = "home";
 		var channelRef;
+		var key = "home";
 		enter();
 
 		function enter() {
@@ -45,16 +47,40 @@
 
 			channelRef.limitToLast(25).on('child_added', function (snapshot) {
 				var data = snapshot.val();
-				console.log(data);
-				$("#messages").html("<p>" + data + "</p>" + $("#messages").html());
+				triplesec.decrypt({
+
+					data: new triplesec.Buffer(data, "hex"),
+					key: new triplesec.Buffer(key),
+					progress_hook: function (obj) { /* ... */ }
+
+				}, function (err, buff) {
+
+					if (!err) {
+						$("#messages").html("<p>" + buff.toString() + "</p>" + $("#messages").html());
+					}
+
+				});
 			});
-			
+
 			channelRef.push("A user joined");
 		}
 
 		$("#input").keypress(function (e) {
 			if (e.keyCode == 13) {
-				channelRef.push($("#input").val());
+				var val = $("#input").val();
+				triplesec.encrypt({
+
+					data: new triplesec.Buffer(val),
+					key: new triplesec.Buffer(key),
+					progress_hook: function (obj) { /* ... */ }
+
+				}, function (err, buff) {
+
+					if (!err) {
+						channelRef.push(buff.toString());
+					}
+
+				});
 				$("#input").val('');
 			}
 		})
