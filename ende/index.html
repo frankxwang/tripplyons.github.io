@@ -1,44 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>EnDe</title>
-		
-    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    	
-		<!-- Latest compiled and minified CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
-		<!-- Optional theme -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+<head>
+	<title>EnDe</title>
 
-		<!-- Latest compiled and minified JavaScript -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-	</head>
-	<body>
-		<div class="container">
-			<button type="button" class="btn btn-primary" onclick="enter()">Enter Channel</button>
-			<h2></h2>
-			<h1>Your Messages:</h1>
-			<div id="messages">
-				
-			</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">;
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+</head>
+
+<body>
+	<button type="button" class="btn btn-primary" onclick="enter()" id="enter">Enter Channel</button>
+	<h2 id="room-label"></h2>
+	<div class="container" id="message-container">
+		<h1 id="your-messages">Your Messages:</h1>
+		<div id="messages">
+
 		</div>
-		
-		<script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
-		<script>
-			var dataRef = new Firebase('https://ende-chat.firebaseio.com/');
-			var channel = "home";
-			var channelRef = new Firebase('https://ende-chat.firebaseio.com/'+channel);
-			function enter() {
-				channel = prompt("CHANNEL");
-				$("h2").html(channel);
-				channelRef = new Firebase('https://ende-chat.firebaseio.com/'+channel);
-			}
-			
-			messagesRef.on('child_added', function (snapshot) {
-				var data = snapshot.val();
-				messages.innerHTML += "<p>"+data+"</p>";
-			});
-		</script>
-	</body>
+	</div>
+
+	<script src='https://cdn.firebase.com/js/client/2.2.1/firebase.js'></script>
+	<script>
+		var dataRef = new Firebase('https://ende-chat.firebaseio.com/');
+		var channel = "home";
+		$("h2").html(channel);
+		var channelRef = new Firebase('https://ende-chat.firebaseio.com/' + channel);
+
+		function enter() {
+			channel = prompt("CHANNEL");
+			$("#room-label").html(channel);
+			channelRef = new Firebase('https://ende-chat.firebaseio.com/' + channel);
+		}
+
+		channelRef.on('child_added', function (snapshot) {
+			var data = snapshot.val();
+			console.log(data);
+			document.getElementById("messages").innerHTML += "<p>" + data + "</p>";
+		});
+	</script>
+</body>
+
 </html>
