@@ -17,9 +17,8 @@
 <body>
 	<div class="container" id="the-container">
 		<br />
-		<button type="button" class="btn btn-primary" onclick="key = prompt('KEY')">Set Key</button>
+		<button type="button" class="btn btn-primary" onclick="key = prompt('KEY'); enter()">Set Key</button>
 		<button type="button" class="btn btn-primary" onclick="channel = prompt('CHANNEL'); enter()" id="enter">Enter Channel</button>
-		<button type="button" class="btn btn-primary" onclick="enter()">Refresh</button>
 		<h2 id="room-label"></h2>
 		<input id="input" type="text" class="form-control">
 		<h1 id="your-messages">Messages:</h1>
@@ -50,24 +49,9 @@
 
 			channelRef.limitToLast(25).on('child_added', function (snapshot) {
 				var data = snapshot.val();
-				var decrypted = CryptoJS.AES.decrypt(data, key).toString(CryptoJS.enc.Utf8);;
+				var decrypted = CryptoJS.AES.decrypt(data, key).toString(CryptoJS.enc.Utf8);
 				$("#messages").html("<p>" + decrypted + "</p>" + $("#messages").html());
-				//				triplesec.decrypt({
-				//
-				//					data: new triplesec.Buffer(data, "hex"),
-				//					key: new triplesec.Buffer(key),
-				//					progress_hook: function (obj) { /* ... */ }
-				//
-				//				}, function (err, buff) {
-				//
-				//					if (!err) {
-				//						$("#messages").html("<p>" + buff.toString() + "</p>" + $("#messages").html());
-				//					}
-				//
-				//				});
 			});
-
-			//			channelRef.push("A user joined");
 		}
 
 		$("#input").keypress(function (e) {
@@ -75,19 +59,7 @@
 				var val = $("#input").val();
 				var encrypted = CryptoJS.AES.encrypt(val, key).toString();
 				channelRef.push(encrypted);
-				//				triplesec.encrypt({
-				//
-				//					data: new triplesec.Buffer(val),
-				//					key: new triplesec.Buffer(key),
-				//					progress_hook: function (obj) { /* ... */ }
-				//
-				//				}, function (err, buff) {
-				//
-				//					if (!err) {
-				//						channelRef.push(buff.toString('hex'));
-				//					}
-				//
-				//				});
+				enter();
 				$("#input").val('');
 			}
 		})
