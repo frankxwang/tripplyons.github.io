@@ -41,14 +41,16 @@
 		function enter() {
 			$("#room-label").html(channel);
 			channelRef = new Firebase('https://ende-chat.firebaseio.com/' + channel);
+			$("#messages").html("");
+
+			channelRef.limitToLast(25).on('child_added', function (snapshot) {
+				var data = snapshot.val();
+				console.log(data);
+				$("#messages").html("<p>" + data + "</p>" + $("#messages").html());
+			});
+			
 			channelRef.push("A user joined");
 		}
-
-		channelRef.limitToLast(25).on('child_added', function (snapshot) {
-			var data = snapshot.val();
-			console.log(data);
-			$("#messages").html("<p>" + data + "</p>" + $("#messages").html());
-		});
 
 		$("#input").keypress(function (e) {
 			if (e.keyCode == 13) {
