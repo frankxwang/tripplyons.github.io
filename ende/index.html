@@ -52,7 +52,6 @@
 
 		function enter() {
 			oldtime = time(function () {
-				console.log(oldtime);
 				$("#room-label").html(channel);
 				channelRef = new Firebase('https://ende-chat.firebaseio.com/' + channel);
 				$("#messages").html("");
