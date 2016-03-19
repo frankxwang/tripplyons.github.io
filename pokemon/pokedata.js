@@ -1,4 +1,17 @@
 var pokedata = {
+	"types": {
+		"normal": {
+			"effective": []
+		},
+		"flying": {
+			"effective": []
+		},
+		"electric": {
+			"effective": [
+				"flying"
+			]
+		}
+	},
 	"moves": {
 		"tackle": {
 			"name": "Tackle",
@@ -10,12 +23,12 @@ var pokedata = {
 			"damage": 50,
 			"type": "electric"
 		},
-         "headbutt": {
+		"headbutt": {
 			"name": "Headbutt",
 			"damage": 5,
 			"type": "normal"
 		}
-        
+
 	},
 	"pokemon": {
 		"pikachu": {
@@ -31,7 +44,8 @@ var pokedata = {
 			"def": 40,
 			"spa": 50,
 			"spd": 50,
-			"spe": 90
+			"spe": 90,
+			"catchrate": 190
 		},
 		"rattata": {
 			"name": "Rattata",
@@ -44,10 +58,11 @@ var pokedata = {
 			"def": 35,
 			"spa": 25,
 			"spd": 35,
-			"spe": 72
+			"spe": 72,
+			"catchrate": 255
 		},
-		"diglet": {
-			"name": "Diglet",
+		"diglett": {
+			"name": "Diglett",
 			"type": "normal",
 			"moves": [
 				["tackle"]
@@ -57,7 +72,8 @@ var pokedata = {
 			"def": 35,
 			"spa": 25,
 			"spd": 35,
-			"spe": 72
+			"spe": 72,
+			"catchrate": 255
 		},
 		"pidgey": {
 			"name": "Pidgey",
@@ -70,7 +86,8 @@ var pokedata = {
 			"def": 40,
 			"spa": 35,
 			"spd": 35,
-			"spe": 56
+			"spe": 56,
+			"catchrate": 255
 		},
 		"eevee": {
 			"name": "Eevee",
@@ -83,9 +100,10 @@ var pokedata = {
 			"def": 50,
 			"spa": 45,
 			"spd": 65,
-			"spe": 55
+			"spe": 55,
+			"catchrate": 45
 
 		}
 	},
-    
+
 };
