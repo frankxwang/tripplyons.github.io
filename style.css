@@ -13,6 +13,7 @@
 .material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
 
 html, body {
+  text-align: center;
   background-color: #303030;
   color: #eeeeee;
   font-family: 'Roboto', sans-serif;
@@ -22,4 +23,13 @@ html, body {
 
 .col-container {
   padding: 12px;
+}
+
+a {
+  display: block;
+  margin-top: 48px;
+}
+
+a:link, a:visited, a:hover, a:active{
+  color: #eeeeee;
 }
