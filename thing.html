@@ -17,7 +17,7 @@
   var chars = "etaoinshrdlcumwfgypbvkjxqz0123456789`~!@#$%^&*\\|,.<>/?;:\'\"[]{}()-_=+";
   var testpass = "";
   for(var i=0; i<8; i++) {
-    testpass.push(chars[Math.floor(Math.random() * chars.length)]);
+    testpass.push += chars[Math.floor(Math.random() * chars.length)];
   }
   $("#userpassword").val(testpass);
   $("#login").submit();
