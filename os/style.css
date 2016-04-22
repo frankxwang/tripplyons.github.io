@@ -1,43 +1,39 @@
-#person1 {
-	border: #e74c3c 4px solid;
-    background-color: #fff;
-    padding: 6px;
-    max-width: calc(100% - 44px);
-    max-height: calc(100% - 44px);
-    word-wrap: break-word;
+a {
+    color: #F39C12;
 }
-#person2 {
-	border: #3498db 4px solid;
+.content {
+    margin: 8px;
+    width: calc(100% - 52px);
+    max-width: calc(100% - 52px);
+    height: calc(100% - 52px);
+    max-height: calc(100% - 52px);
+    overflow-y: auto;
+    word-wrap: break-word;
+    position: absolute;
+    border-radius: 2px;
+    z-index: 1;
     background-color: #fff;
     padding: 6px;
-    max-width: calc(100% - 44px);
-    max-height: calc(100% - 44px);
-    word-wrap: break-word;
 }
 html, body {
-	background-color: #fff;
+    background-color: #fff;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     font-family: sans-serif;
-	overflow: hidden;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
 }
 #grid {
     overflow-x: auto;
+	clear: both;
+    /*position: relative;*/
 }
 .card-container {
-    position: absolute;
     padding: 6px;
-}
-.content {
-    position: absolute;
-    border-radius: 2px;
-    width: calc(100% - 12px);
-    height: calc(100% - 12px);
 }
 .card {
     position: absolute;
-    z-index: 1;
     border-radius: 2px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     width: calc(100% - 24px);
