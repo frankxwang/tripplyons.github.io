@@ -30,7 +30,7 @@ html, body {
     position: relative;
 }
 .card-container {
-    position: relative;
+    position: static;
     padding: 6px;
 }
 .card {
