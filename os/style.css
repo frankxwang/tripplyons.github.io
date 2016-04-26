@@ -25,9 +25,9 @@ html, body {
     font-family: 'Roboto', sans-serif;
 }
 #grid {
-    overflow-x: auto;
+    overflow-x: scroll;
 	clear: both;
-    /*position: relative;*/
+    position: relative;
 }
 .card-container {
     position: relative;
