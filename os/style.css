@@ -30,10 +30,11 @@ html, body {
     /*position: relative;*/
 }
 .card-container {
+    position: relative;
     padding: 6px;
 }
 .card {
-    position: relative;
+    position: absolute;
     border-radius: 2px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     width: calc(100% - 24px);
