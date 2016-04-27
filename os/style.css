@@ -9,7 +9,6 @@ a {
     max-height: calc(100% - 52px);
     overflow-y: auto;
     word-wrap: break-word;
-    position: absolute;
     border-radius: 2px;
     z-index: 1;
     background-color: #fff;
@@ -26,19 +25,17 @@ html, body {
 }
 #grid {
     overflow-x: scroll;
+	max-width: 100%;
 	clear: both;
-    position: relative;
 }
 .card-container {
-    position: static;
     padding: 6px;
 }
 .card {
-    position: absolute;
     border-radius: 2px;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
-    width: calc(100% - 24px);
-    height: calc(100% - 24px);
+    width: calc(100% - 12px);
+    height: calc(100% - 12px);
     display: flex;
     justify-content: center;
     align-items: center;
