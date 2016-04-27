@@ -4,8 +4,8 @@
         var $pongPaddle = $("#pong-paddle");
         var $pongBall = $("#pong-ball");
 		var pongRef;
-		var pongDirX = -1;
-		var pongDirY = 1;
+		var pongDirX;
+		var pongDirY;
 
         function pongListener(e) {
             $pongPaddle.offset({
@@ -18,7 +18,6 @@
         function pongUpdate() {
 			var timestamp = (new Date()).getTime();
 			var change = timestamp - last;
-			console.log(change);
             var pos = $pong.parent().offset();
 			$pongBall.data("x", $pongBall.data("x")+pongDirX*change/10);
 			$pongBall.data("y", $pongBall.data("y")+pongDirY*change/10);
@@ -45,6 +44,8 @@
         }
 
         function pongStart() {
+			pongDirY = 1;
+			pongDirX = -1;
 			last = (new Date()).getTime();
             $pongBall.data("y", 48);
             $pongBall.data("x", 48);
