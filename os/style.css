@@ -2,6 +2,8 @@ a {
     color: #F39C12;
 }
 .content {
+	position: absolute;
+	top: 6px;
     margin: 8px;
     width: calc(100% - 52px);
     max-width: calc(100% - 52px);
@@ -14,18 +16,22 @@ a {
     background-color: #fff;
     padding: 6px;
 }
+#pong {
+	background-color: #2C3E50 !important;
+}
 html, body {
     background-color: #fff;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     font-family: sans-serif;
-    overflow: hidden;
+    overflow-x: auto;
     font-family: 'Roboto', sans-serif;
 }
 #grid {
-    overflow-x: scroll;
-	max-width: 100%;
+    overflow: hidden;
+	max-width: 100vh;
+	max-height: 100vh;
 	clear: both;
 }
 .card-container {
@@ -39,6 +45,8 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
+	-webkit-justify-content: center;
+    -webkit-align-items: center;
 }
 .card-1-1 {
     width: 16.6vh;
@@ -108,4 +116,16 @@ html, body {
 }
 .material-icons.md-light.md-inactive {
     color: rgba(255, 255, 255, 0.3);
+}
+
+#pong-paddle {
+	background-color: #fff;
+	width: 8px;
+	height: 48px;
+}
+
+#pong-ball {
+	background-color: #fff;
+	width: 8px;
+	height: 8px;
 }
