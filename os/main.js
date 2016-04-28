@@ -28,10 +28,16 @@
 			if(collision($pongPaddle, $pongBall)) {
 				pongDirX = -pongDirX;
 			}
-			if($pongBall.data("y") < 0 || $pongBall.data("y") >= $pong.parent().height()-32) {
+			if($pongBall.data("y") < 0) {
+				$pongBall.data("y", 0);
+				pongDirY = -pongDirY;
+			}
+			if($pongBall.data("y") >= $pong.parent().height()-32) {
+				$pongBall.data("y", $pong.parent().height()-33);
 				pongDirY = -pongDirY;
 			}
 			if($pongBall.data("x") >= $pong.parent().width()-32) {
+				$pongBall.data("x", $pong.parent().width()-33);
 				pongDirX = -pongDirX;
 			}
 			if($pongBall.data("x") < 0) {
