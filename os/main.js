@@ -19,8 +19,8 @@
 			var timestamp = (new Date()).getTime();
 			var change = timestamp - last;
             var pos = $pong.parent().offset();
-			$pongBall.data("x", $pongBall.data("x")+pongDirX*change/10);
-			$pongBall.data("y", $pongBall.data("y")+pongDirY*change/10);
+			$pongBall.data("x", $pongBall.data("x")+pongDirX*change/12);
+			$pongBall.data("y", $pongBall.data("y")+pongDirY*change/12);
             $pongBall.offset({
                 top: $pongBall.data("y") + pos.top + 12,
                 left: $pongBall.data("x") + pos.left + 12
