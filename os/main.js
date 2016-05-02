@@ -3,9 +3,9 @@
         var $pong = $("#pong");
         var $pongPaddle = $("#pong-paddle");
         var $pongBall = $("#pong-ball");
-		var pongRef;
-		var pongDirX;
-		var pongDirY;
+        var pongRef;
+        var pongDirX;
+        var pongDirY;
 
         function pongListener(e) {
             $pongPaddle.offset({
@@ -14,48 +14,49 @@
             });
         }
 
-		var last;
+        var last;
+
         function pongUpdate() {
-			var timestamp = (new Date()).getTime();
-			var change = timestamp - last;
+            var timestamp = (new Date()).getTime();
+            var change = timestamp - last;
             var pos = $pong.parent().offset();
-			$pongBall.data("x", $pongBall.data("x")+pongDirX*change/12);
-			$pongBall.data("y", $pongBall.data("y")+pongDirY*change/12);
+            $pongBall.data("x", $pongBall.data("x") + pongDirX * change / 12);
+            $pongBall.data("y", $pongBall.data("y") + pongDirY * change / 12);
             $pongBall.offset({
                 top: $pongBall.data("y") + pos.top + 12,
                 left: $pongBall.data("x") + pos.left + 12
             });
-			if(collision($pongPaddle, $pongBall)) {
-				pongDirX = -pongDirX;
-			}
-			if($pongBall.data("y") < 0) {
-				$pongBall.data("y", 0);
-				pongDirY = -pongDirY;
-			}
-			if($pongBall.data("y") >= $pong.parent().height()-32) {
-				$pongBall.data("y", $pong.parent().height()-33);
-				pongDirY = -pongDirY;
-			}
-			if($pongBall.data("x") >= $pong.parent().width()-32) {
-				$pongBall.data("x", $pong.parent().width()-33);
-				pongDirX = -pongDirX;
-			}
-			if($pongBall.data("x") < 0) {
-				pongEnd();
-				pongStart();
-			} else {
-				last = timestamp;
-				requestAnimationFrame(pongUpdate);
-			}
+            if (collision($pongPaddle, $pongBall)) {
+                pongDirX = -pongDirX;
+            }
+            if ($pongBall.data("y") < 2) {
+                $pongBall.data("y", 2);
+                pongDirY = -pongDirY;
+            }
+            if ($pongBall.data("y") >= $pong.parent().height() - 32) {
+                $pongBall.data("y", $pong.parent().height() - 33);
+                pongDirY = -pongDirY;
+            }
+            if ($pongBall.data("x") >= $pong.parent().width() - 32) {
+                $pongBall.data("x", $pong.parent().width() - 33);
+                pongDirX = -pongDirX;
+            }
+            if ($pongBall.data("x") < 0) {
+                pongEnd();
+                pongStart();
+            } else {
+                last = timestamp;
+                requestAnimationFrame(pongUpdate);
+            }
         }
 
         function pongStart() {
-			pongDirY = 1;
-			pongDirX = -1;
-			last = (new Date()).getTime();
+            pongDirY = 1;
+            pongDirX = -1;
+            last = (new Date()).getTime();
             $pongBall.data("y", 48);
             $pongBall.data("x", 48);
-			requestAnimationFrame(pongUpdate);
+            requestAnimationFrame(pongUpdate);
             $pong.mousemove(pongListener);
         }
 
@@ -92,13 +93,23 @@
                 contentFrame.hide();
             elem.append(contentFrame);
             inside.click(function(e) {
-                contentFrame.fadeIn();
+                contentFrame.show();
+                contentFrame.css({
+                    "-webkit-animation-name": "fadeIn",
+                    "animation-name": "fadeIn"
+                });
                 if (appId == "pong") {
                     pongStart();
                 }
             });
             contentFrame.click(function(e) {
-                contentFrame.fadeOut();
+                contentFrame.css({
+                    "-webkit-animation-name": "fadeOut",
+                    "animation-name": "fadeOut"
+                });
+                setTimeout(function() {
+                  contentFrame.hide();
+                }, 1000);
                 if (appId == "pong") {
                     pongEnd();
                 }
