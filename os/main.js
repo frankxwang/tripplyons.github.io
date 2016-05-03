@@ -6,6 +6,8 @@
         var pongRef;
         var pongDirX;
         var pongDirY;
+        var elem = document.querySelector('.js-switch');
+        var init = new Switchery(elem);
 
         function pongListener(e) {
             $pongPaddle.offset({
@@ -102,7 +104,7 @@
                     pongStart();
                 }
             });
-            contentFrame.click(function(e) {
+            contentFrame.children(".contentBg").click(function(e) {
                 contentFrame.css({
                     "-webkit-animation-name": "fadeOut",
                     "animation-name": "fadeOut"
