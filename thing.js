@@ -5,5 +5,6 @@ xmlhttp.open("POST", "https://palo-alto.edu/index.cfm", true);
 xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 xmlhttp.send("uid="+target+"&userpassword="+pw+"&submit=Sign+in");
 xmlhttp.onreadystatechange = function() {
-  console.log(xhttp.responseText);
+  console.log(xmlhttp.responseText);
 };
+document.getElementsByClassName("alertbox");
