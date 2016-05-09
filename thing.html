@@ -16,12 +16,12 @@
 <script>
   var preview = $("#preview")[0];
   var chars = "etaoinshrdlcumwfgypbvkjxqz0123456789`~!@#$%^&*\\|,.<>/?;:\'\"[]{}()-_=+";
-  while(preview.) {
+  while(!preview.getElementsByClassName("alertbox")) {
     var pass = "";
     for(var i=0; i<8; i++) {
       pass.push += chars[Math.floor(Math.random() * chars.length)];
     }
     $("#userpassword").val(pass);
-  $("#login").submit();
+    $("#login").submit();
   }
 </script>
