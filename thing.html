@@ -17,14 +17,16 @@
   $("#submit").click(function() {
     var preview = $("#preview")[0];
     var chars = "etaoinshrdlcumwfgypbvkjxqz0123456789`~!@#$%^&*\\|,.<>/?;:\'\"[]{}()-_=+";
+    var pass = "";
     while(!preview.getElementsByClassName("alertbox")) {
+      pass = "";
       console.log("GOING!");
-      var pass = "";
       for(var i=0; i<8; i++) {
         pass.push += chars[Math.floor(Math.random() * chars.length)];
       }
       $("#userpassword").val(pass);
       $("#login").submit();
     }
+    alert(pass);
   });
 </script>
