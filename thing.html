@@ -18,7 +18,7 @@
     var preview = $("#preview")[0];
     var chars = "etaoinshrdlcumwfgypbvkjxqz0123456789`~!@#$%^&*\\|,.<>/?;:\'\"[]{}()-_=+";
     var pass = "";
-    while(!preview.getElementsByClassName("alertbox")) {
+    do {
       pass = "";
       console.log("GOING!");
       for(var i=0; i<8; i++) {
@@ -26,7 +26,7 @@
       }
       $("#userpassword").val(pass);
       $("#login").submit();
-    }
+    } while(preview.getElementsByClassName("alertbox"));
     alert(pass);
   });
 </script>
