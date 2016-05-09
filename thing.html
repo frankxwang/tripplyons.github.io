@@ -1,0 +1,27 @@
+<form action="https://palo-alto.edu/index.cfm" method="post" id="login" onsubmit="return true;" target="preview">
+  <label for="username" style="display:block;">Student ID:
+    <input name="uid" type="text" id="uid" size="20">
+  </label>
+  <br>
+  <label for="pass" style="display:block;">Password:
+    <input name="userpassword" type="text" id="userpassword" size="20">
+    <br>
+  </label>
+  <input name="submit" id="submit" type="submit" value="Sign in" class="button"></div>
+</form>
+
+<iframe id="preview" name="preview"></iframe>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-beta1/jquery.min.js"></script>
+<script>
+  var preview = $("#preview")[0];
+  var chars = "etaoinshrdlcumwfgypbvkjxqz0123456789`~!@#$%^&*\\|,.<>/?;:\'\"[]{}()-_=+";
+  while(preview.) {
+    var pass = "";
+    for(var i=0; i<8; i++) {
+      pass.push += chars[Math.floor(Math.random() * chars.length)];
+    }
+    $("#userpassword").val(pass);
+  $("#login").submit();
+  }
+</script>
