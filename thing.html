@@ -4,7 +4,7 @@
   </label>
   <br>
   <label for="pass" style="display:block;">Password:
-    <input name="userpassword" type="text" id="userpassword" size="20">
+    <input name="userpassword" type="password" id="userpassword" size="20">
     <br>
   </label>
   <input name="submit" id="submit" type="submit" value="Sign in" class="button"></div>
@@ -18,15 +18,19 @@
     var preview = $("#preview")[0];
     var chars = "etaoinshrdlcumwfgypbvkjxqzETAOINSHRDLCUMWFGYPBVKJXQZ0123456789`~!@#$%^&*\\|,.<>/?;:\'\"[]{}()-_=+";
     var pass = "";
-    do {
-      pass = "";
-      console.log("GOING!");
-      for(var i=0; i<8; i++) {
-        pass.push += chars[Math.floor(Math.random() * chars.length)];
-      }
-      $("#userpassword").val(pass);
-      $("#login").submit();
-    } while(preview.getElementsByClassName("alertbox"));
-    alert(pass);
+    setTimeout(function() {
+      var interval = setInterval(function() {
+        if(!preview.getElementsByClassName("alertbox")) {
+          clearInterval(interval);
+          alert(pass);
+        }
+        console.log("GOING!");
+        for(var i=0; i<8; i++) {
+          pass.push += chars[Math.floor(Math.random() * chars.length)];
+        }
+        $("#userpassword").val(pass);
+        $("#login").submit();
+      }, 20)
+    }, 20);
   });
 </script>
